@@ -51,13 +51,7 @@ console.log("User created")
 
             next(errorHandler(500,"User cannot be registered"))
      
-            // console.log(error)
-            // return res.status(500).json(
-            //     {
-            //         success:false,
-            //         message:"User cannot be registerd"
-            //     }
-            // )
+           
      
     
 
