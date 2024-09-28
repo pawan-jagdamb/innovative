@@ -33,10 +33,7 @@ export const signup= async(req,res,next)=>{
        console.log(hashedPassword)
     } catch (error) {
 
-            // return res.status(400).json({
-            //     success: false,
-            //     message: "Error in hashing password after multiple attempts",
-            // });
+          
             next(errorHandler(400,"Error in Hashing Password"));
           
     }
