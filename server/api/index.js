@@ -10,9 +10,9 @@ mongoose.connect(process.env.MONGODB_URL).then(()=>{
 .catch((error)=>{  
     console.log("Error in Connecting database");
 })
-
+ 
 const app=express(); 
-app.listen(PORT||5000||6000,()=>{   
+app.listen(PORT,()=>{   
 
 
     console.log('Server is running on port!!! ',PORT)
@@ -25,7 +25,7 @@ app.use('/api/auth',authRouter);
 
 app.use((error,req,res,next)=>{
 
-    const statusCode=error.statusCode ||5000;
+    const statusCode=error.statusCode ||500;
 
     const message= error.message || "Internal Server Error";
 

@@ -10,19 +10,25 @@ export const signup= async(req,res,next)=>{
     try{
 
         // console.log(req.body); 
+        console.log("1")
     const {userName, email, password}= req.body; 
+    console.log('2')
 
     // find is there is already user
     const existingUser=await User.findOne({email});
+    console.log('3')
     const existingUserName= await User.findOne({userName})
+    console.log('4')
 
     if(existingUser || existingUserName ){
-         res.status(400).json({
-            success:false,
+        //  res.status(400).json({
+        //     success:false,
             
              
-            message:"User already Exist",
-        })
+        //     message:"User already Exist",
+        // })
+        next(errorHandler(400,"User already Exist"));
+
     }
     let hashedPassword;
 
@@ -37,12 +43,16 @@ export const signup= async(req,res,next)=>{
             next(errorHandler(400,"Error in Hashing Password"));
           
     }
+    console.log("name, email, password", userName, email, password);
+    console.log('5')
       
     const user= await User.create({
         userName, email, password:hashedPassword
     })
-console.log("User created")
-   res.json(successHandler(201,"User Created Successfully" ));
+    console.log('6')
+ console.log("User created")
+ console.log('7')
+   return res.json(successHandler(201,"User Created Successfully" )); 
 
 
 

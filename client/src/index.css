@@ -1,3 +1,39 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities
+@tailwind utilities;
+
+:root {
+    --richblack-5: #F1F2FF;
+    --richblack-25: #DBDDEA;
+    --richblack-100: #AFB2BF;
+    --richblack-200: #999DAA;
+    --richblack-700: #2C333F;
+    --richblack-800: #161D29;
+    --richblack-900: #000814;
+  }
+  
+  body {
+    background-color: var(--richblack-800); /* Use any of your custom shades */
+  }
+
+  /* HTML: <div class="loader"></div> */
+ 
+    .spinner {
+      width: 12px;   /* Set to a small size */
+      height: 12px;  /* Set to a small size */
+      border-radius: 50%; /* Make it circular */
+      box-shadow: 
+          28px 0px 0 0 rgba(143,71,255,0.2), 
+          22.7px 16.5px 0 0 rgba(143,71,255,0.4), 
+          8.68px 26.6px 0 0 rgba(143,71,255,0.6), 
+          -8.68px 26.6px 0 0 rgba(143,71,255,0.8), 
+          -22.7px 16.5px 0 0 #8f47ff; /* Colorful shadow effect */
+      animation: spinner-b87k6z 1s infinite linear; /* Spinner animation */
+  }
+  
+ 
+ @keyframes spinner-b87k6z {
+    to {
+       transform: rotate(360deg);
+    }
+ }
