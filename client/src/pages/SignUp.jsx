@@ -1,10 +1,16 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import {AiOutlineEye, AiOutlineEyeInvisible} from 'react-icons/ai'
+import { toast } from 'react-hot-toast'
 
 export default function SignUp() {
   const [formData,setFormData]=useState({})
   const [error,setError] =useState(null);
   const [loading,setLoading]=useState(false);
+  const navigate= useNavigate();
+
+  const [showPassword, setShowPassword]=useState(false);
+  const [showConfirmPassword, setShowConfirmPassword]=useState(false);
 
   const handleChange=(e)=>{
     setFormData({
@@ -16,6 +22,11 @@ export default function SignUp() {
   const handleSubmit=async(e)=>{
     e.preventDefault();  // prevent refreshing the page
     try {
+      // console.log(formData.password);
+      if(formData.password!=formData.confirmPassword){
+        toast.error("Password Not matched")
+        return;
+      }
       
       setLoading(true);
       const res= await fetch('/api/auth/signup',
@@ -29,12 +40,18 @@ export default function SignUp() {
         });
       const data= await res.json();
       if(data.success===false){
-        setError(data.messate);
         setLoading(false);
-        return 
-        
+        toast.error("User Already Exist");
+
+        setError(data.message);
+        return;
       }
+        toast.success("Account Created");
+  
+      
       setLoading(false);
+      setError(null);
+    navigate('/sign-in');
     } catch (error) {
       setLoading(false);
       setError(error.message);
@@ -50,10 +67,17 @@ export default function SignUp() {
 
       <form action="" onSubmit={handleSubmit}  className=' flex flex-col gap-4' >
 
-        <input type="text" placeholder='username' className=' border p-3 rounded-lg text-richblack-900' id='userName' onChange={handleChange} />
-        <input type="text" placeholder='email' className=' border p-3 rounded-lg text-richblack-900' id='email' onChange={handleChange} />
+        <input required type="text" placeholder='username' className=' border p-3 rounded-lg text-richblack-900' id='userName' onChange={handleChange} />
+        <input required type="text" placeholder='email' className=' border p-3 rounded-lg text-richblack-900' id='email' onChange={handleChange} />
 
-        <input type="text" placeholder='password' className=' border p-3 rounded-lg text-richblack-900' id='password' onChange={handleChange} />
+        
+
+        <input required   type={showPassword?("text"):("password")} placeholder='Password' className=' border p-3 rounded-lg text-richblack-900' id='password' onChange={handleChange} />
+        <input required   type={showPassword?("text"):("password")} placeholder='Confirm Password' className=' border p-3 rounded-lg text-richblack-900' id='confirmPassword' onChange={handleChange} />
+
+
+
+
         <button disabled={loading} className='bg-richblack-900 text-richblack-25 p-3 rounded-lg
         uppercase hover:opacity-80' >
         {loading?'Loading ...':'Sign Up'}
@@ -66,6 +90,7 @@ export default function SignUp() {
           <span className='text-yellow-700   hover:opacity-80'> Sign In</span>
         </Link>
       </div>
+      
     </div>
-  )
-}
+  );
+};
