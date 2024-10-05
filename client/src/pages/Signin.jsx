@@ -2,17 +2,17 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {AiOutlineEye, AiOutlineEyeInvisible} from 'react-icons/ai'
 import { toast } from 'react-hot-toast'
-
+import { useDispatch, useSelector } from 'react-redux';
+import { signInFailure,signInStart, signInSuccess } from '../redux/user/userSlice';
 export default function Signin() {
   const [formData,setFormData]=useState({})
-  const [error,setError] =useState(null);
-  const [loading,setLoading]=useState(false);
+  const{loading,error}=useSelector((state)=>state.user)
   const navigate= useNavigate();
-
+  const dispatch=useDispatch();
   const [showPassword, setShowPassword]=useState(false);
   // const [showConfirmPassword, setShowConfirmPassword]=useState(false);
 
-  const handleChange=(e)=>{
+  const handleChange=(e)=>{ 
     setFormData({
       ...formData,
       [e.target.id]:e.target.value,
@@ -24,8 +24,7 @@ export default function Signin() {
     try {
       // console.log(formData.password);
      
-      
-      setLoading(true);
+      dispatch(signInStart());
       const res= await fetch('/api/auth/signin',
         { 
           method:'POST',
@@ -38,23 +37,18 @@ export default function Signin() {
       const data= await res.json();
       console.log("Data ->",data);
       if(data.success===false){
-        setLoading(false);
+        dispatch(signInFailure(data.message));
         toast.error(data.message);
 
-        setError(data.message);
         return;
       }
         toast.success("Logged In");
   
       
-      setLoading(false);
-      setError(null);
+    dispatch(signInSuccess(data))
     navigate('/');
     } catch (error) {
-      setLoading(false);
-      setError(error.message);
-
-      
+      dispatch(signInFailure(error.message))
     }
     // console.log(data)
   };

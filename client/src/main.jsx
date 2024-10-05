@@ -5,12 +5,14 @@ import { ToastContainer, toast } from 'react-toastify';
 import { Toaster } from "react-hot-toast";
 import './index.css'
 import { BrowserRouter } from 'react-router-dom'
+import { store } from './redux/store.js';
+import { Provider } from 'react-redux';
 
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  <Provider store={store}>
     <App />
     <Toaster/>
-  </StrictMode>,
+  </Provider>,
 )
 
