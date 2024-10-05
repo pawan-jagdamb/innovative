@@ -41,12 +41,12 @@ export default function SignUp() {
       const data= await res.json();
       if(data.success===false){
         setLoading(false);
-        toast.error("User Already Exist");
+        toast.error(data.message);
 
         setError(data.message);
         return;
       }
-        toast.success("Account Created");
+        toast.success(data.message);
   
       
       setLoading(false);
@@ -67,13 +67,13 @@ export default function SignUp() {
 
       <form action="" onSubmit={handleSubmit}  className=' flex flex-col gap-4' >
 
-        <input required type="text" placeholder='username' className=' border p-3 rounded-lg text-richblack-900' id='userName' onChange={handleChange} />
-        <input required type="text" placeholder='email' className=' border p-3 rounded-lg text-richblack-900' id='email' onChange={handleChange} />
+        <input  type="text" placeholder='username' className=' border p-3 rounded-lg text-richblack-900' id='userName' onChange={handleChange} />
+        <input  type="text" placeholder='email' className=' border p-3 rounded-lg text-richblack-900' id='email' onChange={handleChange} />
 
         
 
-        <input required   type={showPassword?("text"):("password")} placeholder='Password' className=' border p-3 rounded-lg text-richblack-900' id='password' onChange={handleChange} />
-        <input required   type={showPassword?("text"):("password")} placeholder='Confirm Password' className=' border p-3 rounded-lg text-richblack-900' id='confirmPassword' onChange={handleChange} />
+        <input    type={showPassword?("text"):("password")} placeholder='Password' className=' border p-3 rounded-lg text-richblack-900' id='password' onChange={handleChange} />
+        <input    type={showPassword?("text"):("password")} placeholder='Confirm Password' className=' border p-3 rounded-lg text-richblack-900' id='confirmPassword' onChange={handleChange} />
 
 
 
