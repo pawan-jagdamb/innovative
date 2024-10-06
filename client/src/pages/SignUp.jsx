@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {AiOutlineEye, AiOutlineEyeInvisible} from 'react-icons/ai'
-import { toast } from 'react-hot-toast'
+import { toast } from 'react-hot-toast';
+import GoogleOAuth from '../components/GoogleOAuth';
+
 
 export default function SignUp() {
   const [formData,setFormData]=useState({})
@@ -79,9 +81,10 @@ export default function SignUp() {
 
 
         <button disabled={loading} className='bg-richblack-900 text-richblack-25 p-3 rounded-lg
-        uppercase hover:opacity-80' >
+        uppercase hover:opacity-50' >
         {loading?'Loading ...':'Sign Up'}
          </button>
+         <GoogleOAuth/>
       </form>
 
       <div className='flex gap-2 mt-5'>

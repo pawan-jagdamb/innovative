@@ -19,6 +19,9 @@ export const signup= async(req,res,next)=>{
         next(errorHandler(400,"All Field are mendatory"))
     }
 
+    const imageUrl=`https://api.dicebear.com/9.x/initials/svg?seed=${userName}&backgroundColor=ffcc00&size=128;
+`
+
     // find is there is already user
     const existingUser=await User.findOne({email});
     console.log('3')
@@ -47,7 +50,7 @@ export const signup= async(req,res,next)=>{
     console.log('5')
       
     const user= await User.create({
-        userName, email, password:hashedPassword
+        userName, email, password:hashedPassword,avatar:imageUrl
     })
 
  console.log("User created")
@@ -60,8 +63,8 @@ export const signup= async(req,res,next)=>{
 
     }
 
-
 };
+
 export const signin=async(req,res,next)=>{
 
     const {email, password}=req.body;
@@ -105,3 +108,59 @@ export const signin=async(req,res,next)=>{
         next(error);
     }
 };
+
+export const google = async(req,res,next)=>{
+    try{
+        const user= await User.findOne({email:req.body.email});
+        if(user){
+            const token=jwt.sign({id:user._id}, process.env.JWT_SECRET,{
+                expiresIn:"2h",
+            });
+
+            const options={
+                httpOnly:true,
+            }
+            user.password=null; 
+    
+           return res.cookie("access_token",token,options).status(200).json({
+                success:true,
+                token,
+                user,
+                message:"User logged in successfully",
+    
+            })
+
+        }else{
+            const generatedPassword=Math.random().toString(36).slice(-8)+ Math.random().toString(36).slice(-8); // 16 character password generating for google authentication
+
+            const hashedPassword= bcrypt.hashSync(generatedPassword,saltRounds);
+            // since we are creating user so 
+            // we will concatenate user name and add extra random number  to make it unique;
+
+
+            const username=req.body.name.split(" ").join("").toLowerCase() + Math.random().toString(36).slice(-6);
+
+            const newUser= new User({userName:username,password:hashedPassword,email:req.body.email,avatar:req.body.photo});
+            await newUser.save();
+            const token= jwt.sign({id:newUser._id},process.env.JWT_SECRET)
+            const options={
+                httpOnly:true,
+            }
+            newUser.password=null; 
+            return res.cookie("access_token",token,options).status(200).json({
+                success:true,
+                token,
+                newUser,
+                message:"User logged in successfully",
+    
+            })
+    
+        }
+
+    }catch(error){
+
+        next(error);
+
+    }
+}
+

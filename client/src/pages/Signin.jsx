@@ -4,6 +4,7 @@ import {AiOutlineEye, AiOutlineEyeInvisible} from 'react-icons/ai'
 import { toast } from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux';
 import { signInFailure,signInStart, signInSuccess } from '../redux/user/userSlice';
+import GoogleOAuth from '../components/GoogleOAuth';
 export default function Signin() {
   const [formData,setFormData]=useState({})
   const{loading,error}=useSelector((state)=>state.user)
@@ -70,9 +71,10 @@ export default function Signin() {
 
 
         <button disabled={loading} className='bg-richblack-900 text-richblack-25 p-3 rounded-lg
-        uppercase hover:opacity-80' >
+        uppercase hover:opacity-50' >
         {loading?'Loading ...':'Sign In'}
          </button>
+         <GoogleOAuth/>
       </form>
 
       <div className='flex gap-2 mt-5'>

@@ -5,14 +5,18 @@ import { ToastContainer, toast } from 'react-toastify';
 import { Toaster } from "react-hot-toast";
 import './index.css'
 import { BrowserRouter } from 'react-router-dom'
-import { store } from './redux/store.js';
+import { store ,persistor} from './redux/store.js';
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
+  <PersistGate loading={null} persistor={persistor}>
     <App />
     <Toaster/>
+  </PersistGate>
+    
   </Provider>,
 )
 
