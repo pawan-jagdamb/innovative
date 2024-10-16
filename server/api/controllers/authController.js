@@ -14,13 +14,12 @@ export const signup= async(req,res,next)=>{
         // console.log(req.body); 
         console.log("1")
     const {userName, email, password}= req.body; 
-    console.log('2')
+    console.log('2');
     if(!userName||!email ||!password){
-        next(errorHandler(400,"All Field are mendatory"))
+        next(errorHandler(400,"All Field are mendatory"));
     }
 
-    const imageUrl=`https://api.dicebear.com/9.x/initials/svg?seed=${userName}&backgroundColor=ffcc00&size=128;
-`
+    const imageUrl=`https://api.dicebear.com/9.x/initials/svg?seed=${userName}&backgroundColor=ffcc00&size=128`;
 
     // find is there is already user
     const existingUser=await User.findOne({email});
@@ -87,11 +86,11 @@ export const signin=async(req,res,next)=>{
         }
 
             const token= jwt.sign({id:validUser._id}, process.env.JWT_SECRET,{
-                                        expiresIn:"2h",
+                                        // expiresIn:"session",
                                     });
         //
         const options={
-            expires: new Date(Date.now() + 24*60*60*1000),
+            // expires: new Date(Date.now() + 1*60*60*1000),
             httpOnly:true,
         }
         validUser.password=null; 
@@ -99,7 +98,7 @@ export const signin=async(req,res,next)=>{
         res.cookie("access_token",token,options).status(200).json({
             success:true,
             token,
-            validUser,
+           user: validUser,
             message:"User logged in successfully",
 
         })
@@ -150,7 +149,7 @@ export const google = async(req,res,next)=>{
             return res.cookie("access_token",token,options).status(200).json({
                 success:true,
                 token,
-                newUser,
+                user:newUser,
                 message:"User logged in successfully",
     
             })

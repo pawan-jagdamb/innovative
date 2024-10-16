@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import 'dotenv/config'
 import userRouter from './routes/userRoute.js'
 import authRouter from './routes/authRoute.js'
+import cookieParser from "cookie-parser";
 const PORT= process.env.PORT;
 mongoose.connect(process.env.MONGODB_URL).then(()=>{
     console.log("connection to database is successfull");
@@ -19,6 +20,7 @@ app.listen(PORT,()=>{
 })    
 
 app.use(express.json());
+app. use(cookieParser());
  
 app.use('/api/user',userRouter);    
 app.use('/api/auth',authRouter); 
