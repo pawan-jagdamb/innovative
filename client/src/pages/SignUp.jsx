@@ -70,7 +70,7 @@ export default function SignUp() {
       <form action="" onSubmit={handleSubmit}  className=' flex flex-col gap-4' >
 
         <input  type="text" placeholder='username' className=' border p-3 rounded-lg text-richblack-900' id='userName' onChange={handleChange} />
-        <input  type="text" placeholder='email' className=' border p-3 rounded-lg text-richblack-900' id='email' onChange={handleChange} />
+        <input  type="email" placeholder='email' className=' border p-3 rounded-lg text-richblack-900' id='email' onChange={handleChange} />
 
         
 

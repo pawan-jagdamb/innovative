@@ -61,7 +61,7 @@ export default function Signin() {
 
       <form action="" onSubmit={handleSubmit}  className=' flex flex-col gap-4' >
 
-        <input required type="text" placeholder='email' className=' border p-3 rounded-lg text-richblack-900' id='email' onChange={handleChange} />
+        <input required type="email" placeholder='email' className=' border p-3 rounded-lg text-richblack-900' id='email' onChange={handleChange} />
 
         
 

@@ -95,9 +95,9 @@ export const signin=async(req,res,next)=>{
         }
         validUser.password=null; 
 
-        res.cookie("access_token",token,options).status(200).json({
+        res.cookie('access_token',token,options).status(200).json({
             success:true,
-            token,
+           
            user: validUser,
             message:"User logged in successfully",
 
@@ -112,9 +112,7 @@ export const google = async(req,res,next)=>{
     try{
         const user= await User.findOne({email:req.body.email});
         if(user){
-            const token=jwt.sign({id:user._id}, process.env.JWT_SECRET,{
-                expiresIn:"2h",
-            });
+            const token=jwt.sign({id:user._id}, process.env.JWT_SECRET);
 
             const options={
                 httpOnly:true,
@@ -123,7 +121,7 @@ export const google = async(req,res,next)=>{
     
            return res.cookie("access_token",token,options).status(200).json({
                 success:true,
-                token,
+               
                 user,
                 message:"User logged in successfully",
     
@@ -148,7 +146,7 @@ export const google = async(req,res,next)=>{
             newUser.password=null; 
             return res.cookie("access_token",token,options).status(200).json({
                 success:true,
-                token,
+           
                 user:newUser,
                 message:"User logged in successfully",
     
