@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { signInSuccess } from '../redux/user/userSlice';
 import { useNavigate } from 'react-router-dom';
+import { FcGoogle } from "react-icons/fc";
 export default function GoogleOAuth() {
 
     const dispatch= useDispatch();
@@ -47,6 +48,7 @@ export default function GoogleOAuth() {
         }
     }
   return (
-    <button onClick={handleGoogleAuth} type='button' className='bg-richblack-900 text-white p-3 rounded-lg uppercase hover:opacity-50'>Continue With Google</button>
+    <button onClick={handleGoogleAuth} type='button' className="flex rounded-md items-center justify-center border border-richblack-700 font-medium text-richblack-100 px-[12px] py-[8px] gap-x-2 ">  <FcGoogle />
+          <p>Continue with Google</p></button>
   )
 }

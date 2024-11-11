@@ -10,7 +10,7 @@ export default function Header() {
 //   console.log("Current user.user->",currentUser.user.avatar);
 
   return (
-    <header className='text-xl bg-richblack-900 shadow-md'>
+    <header className='text-xl bg-richblack-800 shadow-md'>
     <div className='flex justify-between items-center max-w-6xl mx-auto p-3'>
         <h1 className='font-bold text-sm sm:text-xl flex flex-wrap'>
             <Link to='/'>

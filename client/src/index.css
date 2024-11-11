@@ -13,7 +13,7 @@
   }
   
   body {
-    background-color: var(--richblack-800); /* Use any of your custom shades */
+    background-color: var(--richblack-900); /* Use any of your custom shades */
   }
 
   /* HTML: <div class="loader"></div> */

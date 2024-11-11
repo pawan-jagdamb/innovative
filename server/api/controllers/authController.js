@@ -161,3 +161,18 @@ export const google = async(req,res,next)=>{
     }
 }
 
+export const signOut=(req,res,next)=>{
+    try{
+        // res.clearCookie('access_token');
+     return   res.clearCookie('access_token').status(200).json({
+            success:true,
+            message:"Logout Successfull"
+        })
+         
+    }
+    catch(error){
+        next(error);
+    }
+
+}
+

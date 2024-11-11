@@ -3,12 +3,14 @@ import { useSelector } from 'react-redux'
 import { useRef } from 'react'
 import { app } from '../GoogleFirebase'
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage'
-import { updateUserFailure, updateUserSuccess, updateUserStart, deleteUserFailure, deleteUserStart, deleteUserSuccess } from '../redux/user/userSlice'
+import { updateUserFailure, updateUserSuccess, updateUserStart, deleteUserFailure, deleteUserStart, deleteUserSuccess, signOutUserStart, signInFailure, signOutUserSuccess, signOutUserFailure } from '../redux/user/userSlice'
 import { useDispatch } from 'react-redux'
 import toast from 'react-hot-toast'
+import { Link } from 'react-router-dom'
 
 
-import { Navigate, useNavigate } from 'react-router-dom';
+
+// import { Navigate, useNavigate } from 'react-router-dom';
 
 export default function Profile() {
   const fileRef = useRef(null)
@@ -104,7 +106,7 @@ export default function Profile() {
 
 
 
-      dispatch(signInSuccess(data));
+      dispatch(updateUserSuccess(data));
       // Navigate('/home');
 
     } catch (error) {
@@ -155,15 +157,27 @@ export default function Profile() {
 
 
   }
-  const handleSignOut = () => {
-    localStorage.removeItem('access_token');
+  const handleSignOut = async() => {
 
-
-
-    localStorage.removeItem('persist:root'); // Just to ensure it's cleared
-
-
-    window.location.reload();
+    try {
+      dispatch(signOutUserStart());
+      const res= await fetch('/api/auth/signout',{
+        method:'GET'
+      });
+      const data= await res.json();
+      if(data.success==false){
+        toast.error(data.message);
+        dispatch(signOutUserFailure(data.message));
+        return;
+      }
+      toast.success(data.message);
+      dispatch(signOutUserSuccess(data));
+      
+    } catch (error) {
+      dispatch(signOutUserFailure(error.message));
+      
+    }
+   
   }
   return (
     <div className='p-3 max-w-lg mx-auto'>
@@ -206,6 +220,9 @@ export default function Profile() {
         {/*  creating button */}
         <button className=' bg-richblack-900 text-whited rounded-lg
         p-3 uppercase text-white hover:opacity-50 disabled:opacity-80'>Update</button>
+        <Link to={"/create-listing"} className='bg-green-700 p-3 text-white rounded-lg uppercase text-center hover:opacity-95'>
+        Create Listing
+        </Link>
       </form>
       <div className=' flex justify-between mt-5'>
         <span className='text-red-700 cursor-pointer' onClick={handleDeleteUser}>Delete Account</span>
