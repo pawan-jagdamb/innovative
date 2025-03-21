@@ -21,12 +21,12 @@ const listingSchema= new mongoose.Schema({
     },
     discountPrice:{
         type:Number,
-        required:true,
+        // required:true,
 
     },
     offer:{
         type:Boolean,
-        required:true,
+        // required:true,
     },
     imageUrls:{
         type:Array,
