@@ -11,6 +11,7 @@ import {
 import signInPhoto from '../assets/signInPhoto.jpg'
 import frame from '../assets/frame.png'
 import GoogleOAuth from "../components/GoogleOAuth";
+import { login } from "../services/operations/authAPI";
 export default function Signin() {
   const [formData, setFormData] = useState({});
   const { loading } = useSelector((state) => state.user);
@@ -27,32 +28,7 @@ export default function Signin() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault(); // prevent refreshing the page
-    try {
-      // console.log(formData.password);
-
-      dispatch(signInStart());
-      const res = await fetch("/api/auth/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      console.log("Data ->", data);
-      if (data.success === false) {
-        dispatch(signInFailure(data.message));
-        toast.error(data.message);
-
-        return;
-      }
-      toast.success("Logged In");
-
-      dispatch(signInSuccess(data));
-      navigate("/");
-    } catch (error) {
-      dispatch(signInFailure(error.message));
-    }
+    dispatch(login(formData.email, formData.password, navigate))
     // console.log(data)
   };
   console.log(formData);

@@ -3,13 +3,17 @@ import { Link, useNavigate } from 'react-router-dom'
 import {AiOutlineEye, AiOutlineEyeInvisible} from 'react-icons/ai'
 import { toast } from 'react-hot-toast';
 import GoogleOAuth from '../components/GoogleOAuth';
+import { useDispatch } from 'react-redux';
+import { sendOtp } from '../services/operations/authAPI';
+import { setSignupData } from '../redux/user/authSlice';
 
 
 export default function SignUp() {
-  const [formData,setFormData]=useState({})
+  const [formData,setFormData]=useState({}) 
   const [error,setError] =useState(null);
   const [loading,setLoading]=useState(false);
   const navigate= useNavigate();
+  const dispatch= useDispatch();
 
   const [showPassword, setShowPassword]=useState(false);
   const [showConfirmPassword, setShowConfirmPassword]=useState(false);
@@ -23,44 +27,18 @@ export default function SignUp() {
   }
   const handleSubmit=async(e)=>{
     e.preventDefault();  // prevent refreshing the page
-    try {
+    
       // console.log(formData.password);
       if(formData.password!=formData.confirmPassword){
         toast.error("Password Not matched")
         return;
       }
       
-      setLoading(true);
-      const res= await fetch('/api/auth/signup',
-        { 
-          method:'POST',
-          headers:{
-            'Content-Type':'application/json',
-          },
-          body: JSON.stringify(formData),
-  
-        });
-      const data= await res.json();
-      if(data.success===false){
-        setLoading(false);
-        toast.error(data.message);
+      // setLoading(true);
+      dispatch(setSignupData(formData));
+      dispatch(sendOtp(formData.email, navigate))
 
-        setError(data.message);
-        return;
-      }
-        toast.success(data.message);
-  
-      
-      setLoading(false);
-      setError(null);
-    navigate('/sign-in');
-    } catch (error) {
-      setLoading(false);
-      setError(error.message);
-
-      
-    }
-    // console.log(data)
+    //  
   };
   console.log(formData);
   return (

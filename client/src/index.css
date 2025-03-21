@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* :root {
     --richblack-5: #F1F2FF;
     --richblack-25: #DBDDEA;
     --richblack-100: #AFB2BF;
@@ -10,7 +10,7 @@
     --richblack-700: #2C333F;
     --richblack-800: #161D29;
     --richblack-900: #000814;
-  }
+  } */
   
   body {
     background-color: var(--richblack-900); /* Use any of your custom shades */
@@ -37,3 +37,4 @@
        transform: rotate(360deg);
     }
  }
+ 

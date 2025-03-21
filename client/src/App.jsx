@@ -8,6 +8,8 @@ import Profile from './pages/Profile'
 import Header from './components/Header'
 import PrivateRoute from './components/PrivateRoute'
 import CreateListing from './pages/CreateListing'
+import { VerifyEmail } from './pages/VerifyEmail'
+import './App.css'
 
 
 export default function App() {
@@ -27,6 +29,14 @@ export default function App() {
              <Route path='/create-listing' element={<CreateListing/>}/>
       
       </Route>
+      <Route
+      path='verify-email'
+      element={
+          <VerifyEmail/>
+      
+      }
+
+    />
     </Routes>
     </BrowserRouter>
     

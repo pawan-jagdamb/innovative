@@ -7,79 +7,99 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../GoogleFirebase";
+import toast from "react-hot-toast";
+import { apiConnector } from "../services/apiConnector";
+import { endpoints } from "../services/apis";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+
+const { CREATE_LISTING } = endpoints;
+
 
 export default function CreateListing(props) {
+  const navigate= useNavigate();
+  const {currentUser}= useSelector(state=>state.user)
   const [files, setFiles] = useState([]);
+
+  console.log("Current user",currentUser);
   const [formData, setFormData] = useState({
     imageUrls: [],
-    name:'',
-    description:'',
-    address:'',
-    regularPrice:0,
-    discountPrice:0,
-    offer:false,
-    furnished:false,
-
+    name: "",
+    description: "",
+    address: "",
+    regularPrice: 0,
+    discountPrice: 0,
+    offer: false,
+    furnished: false,
   });
-  const[imageUploadError,setImageUploadError]=useState(false);
-  const [uploadingProgress,setUploadingProgress]=useState(false);
-  console.log("files",files);
+  const [imageUploadError, setImageUploadError] = useState(false);
+  const [uploadingProgress, setUploadingProgress] = useState(false);
 
-  console.log("Form Data",formData);
-  function isFileTypeSupported(type){
-    const supportedType= ["jpeg", "jpg", "png"];
+  const [err, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  // console.log("files",files);
+
+  console.log("Form Data", formData);
+  function isFileTypeSupported(type) {
+    const supportedType = ["jpeg", "jpg", "png"];
 
     return supportedType.includes(type);
-}
+  }
 
   const handleImageUpload = (e) => {
     // e.preventDefault();
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
-        setUploadingProgress(true);
-        setImageUploadError(false);
+      setUploadingProgress(true);
+      setImageUploadError(false);
+      // const toastId=toast.loading("Uploading")
       const promises = []; // we need to wait for all of them to upload
 
       for (let i = 0; i < files.length; i++) {
-        const fileType=files[i].name.split('.')[1].toLowerCase();
-        console.log("each file is",files[i]);
-        if(isFileTypeSupported(fileType)){
-            // console.log(reached);
-            // if(files[i].size >2*1024){}
-            if(files[i].size/1000>2*1024){
-                setUploadingProgress(false);
-                
-                setImageUploadError('Image  size should be less than 2mb max(2mb)');
-                return;
-            }
-            promises.push(storeImage(files[i]));
-        }
-        else{
+        const fileType = files[i].name.split(".")[1].toLowerCase();
+        console.log("each file is", files[i]);
+        if (isFileTypeSupported(fileType)) {
+          // console.log(reached);
+          // if(files[i].size >2*1024){}
+          if (files[i].size / 1000 > 2 * 1024) {
             setUploadingProgress(false);
-            setImageUploadError('File Type Not Supported');
+            // toast.dismiss(toastId)
+            setImageUploadError("Image  size should be less than 2mb max(2mb)");
+            toast.error("Image  size should be less than 2mb");
             return;
+          }
+          promises.push(storeImage(files[i]));
+        } else {
+          setUploadingProgress(false);
+          setImageUploadError("File Type Not Supported");
+          toast.dismiss(toastId);
+          toast.error("Invalid file name or File Type Not Supported");
+          return;
         }
-        
-        
+        // toast.dismiss(toastId)
       }
-      Promise.all(promises).then((urls) => {
-        setFormData({
-          ...formData,
-          imageUrls: formData.imageUrls.concat(urls),
+      Promise.all(promises)
+        .then((urls) => {
+          setFormData({
+            ...formData,
+            imageUrls: formData.imageUrls.concat(urls),
+          });
+          setImageUploadError(false);
+          setUploadingProgress(false);
+        })
+        .catch((error) => {
+          setImageUploadError("Image  size should be max(2mb)");
+          toast.error("Image  size should be max(2mb)");
+          // setUploadingProgress(false);
         });
-        setImageUploadError(false);
-        setUploadingProgress(false);
-      }).catch((error)=>{
-        setImageUploadError('Image  size should be max(2mb)');
-        // setUploadingProgress(false);
-      });
-    }
-    else if(files.length==0){
-        setImageUploadError("Choose atleast 1 image");
-        setUploadingProgress(false);
-    }
-    else{
-        setImageUploadError("You can only upload 6 images");
-        setUploadingProgress(false);
+    } else if (files.length == 0) {
+      setImageUploadError("Choose atleast 1 image");
+      toast.error("Choose atleast 1 image");
+      setUploadingProgress(false);
+    } else {
+      setImageUploadError("You can only upload 6 images");
+      toast.error("You can only upload 6 images");
+      setUploadingProgress(false);
     }
   };
 
@@ -92,9 +112,10 @@ export default function CreateListing(props) {
       const uploadTask = uploadBytesResumable(storageRef, file);
       uploadTask.on(
         "state_changed",
-        (snapshot)=>{
-            const progress= (snapshot.bytesTransferred/snapshot.totalBytes)*100;
-            console.log("upload task is",progress);
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("upload task is", progress);
         },
         (error) => {
           reject(error);
@@ -108,23 +129,87 @@ export default function CreateListing(props) {
     });
   };
 
-  const handleRemoveImage =(index)=>{
+  const handleRemoveImage = (index) => {
     setFormData({
+      ...formData,
+      imageUrls: formData.imageUrls.filter((_, i) => i !== index),
+    });
+  };
+
+  const handleFormChange = (e) => {
+    if (e.target.id == "furnished" || e.target.id == "offer") {
+      setFormData({
         ...formData,
-        imageUrls:formData.imageUrls.filter((_,i)=>i!==index)
-    })
-  }
-
-  const handleFormChange =(e)=>{
-    if(e.target.id=='furnished'|| e.target.id=='offer'){
-
-        setFormData({
-            ...formData,
-            [e.target.id]:e.target.checked
-        })
+        [e.target.id]: e.target.checked,
+      });
     }
-    
-  }
+    if (
+      e.target.type === "number" ||
+      e.target.type == "text" ||
+      e.target.type == "textarea"
+    ) {
+      setFormData({
+        ...formData,
+        [e.target.id]: e.target.value,
+      });
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("first")
+    const toastId= toast.loading("Creating Listing")
+    console.log("sedond")
+
+    try {
+      if(formData.imageUrls.length<1){
+        toast.error("Image not Uploaded");
+        return
+      }
+      if(formData.offer && formData.discountPrice>formData.regularPrice){
+        toast.error("Discount price should be less then regular price");
+        return;
+      }
+console.log("threee")
+      setLoading(true);
+      setError(false);
+      const newFormData={
+        ...formData,userRef:`${currentUser._id}`  
+      }
+      console.log("New form Data",newFormData)
+     
+      const response = await apiConnector(
+        "POST",
+        CREATE_LISTING,
+        newFormData,   {
+          "Content-Type": "application/json",
+          Authorization:`Bearer ${currentUser.token}`
+         
+        }
+     
+      );
+      toast.dismiss(toastId);
+      console.log("four")
+      console.log(" response after submint listing data",response.data)
+
+      // const data= await response.json();
+      // console.log("Data  after submmit in creating listing",data);
+      setLoading(false);
+      if(!response.data.success){
+        setError(response.data.message)
+        return
+      }
+      const data= response.data;
+      console.log("Data in create listing ",data);
+      navigate(`/listing/${data.listing._id}`)
+    } catch (error) {
+      toast.dismiss(toastId);
+      setError(error.message);
+      toast.error(error);
+      setLoading(false);
+      console.log("Error in submitting data", error);
+    }
+  };
 
   return (
     <main className="p-3 max-w-4xl mx-auto">
@@ -132,7 +217,11 @@ export default function CreateListing(props) {
         Create Listing
       </h1>
 
-      <form action="" className="flex flex-col sm:flex-row gap-4">
+      <form
+        onSubmit={handleSubmit}
+        action=""
+        className="flex flex-col sm:flex-row gap-4"
+      >
         <div className="flex flex-col gap-4  flex-1">
           <input
             type="text"
@@ -152,7 +241,6 @@ export default function CreateListing(props) {
             id="description"
             value={formData.description}
             onChange={handleFormChange}
-
             required
           />
           <input
@@ -167,18 +255,22 @@ export default function CreateListing(props) {
 
           <div className="flex gap-6 flex-wrap text-white">
             <div className="flex gap-2">
-              <input type="checkbox" id="furnished" className="w-5"
-               onChange={handleFormChange}
-               checked={formData.furnished}
-
-               />
+              <input
+                type="checkbox"
+                id="furnished"
+                className="w-5"
+                onChange={handleFormChange}
+                checked={formData.furnished}
+              />
               <span>Furnished</span>
             </div>
             <div className="flex gap-2">
-              <input type="checkbox" id="offer" className="w-5" 
-                     onChange={handleFormChange}
-               checked={formData.offer}
-
+              <input
+                type="checkbox"
+                id="offer"
+                className="w-5"
+                onChange={handleFormChange}
+                checked={formData.offer}
               />
               <span>Offer</span>
             </div>
@@ -191,9 +283,7 @@ export default function CreateListing(props) {
                 required
                 min="0"
                 onChange={handleFormChange}
-               checked={formData.regularPrice}
-
-
+                checked={formData.regularPrice}
                 className="p-3 border border-gray-300 rounded-lg text-black"
               />
               <div className="flex flex-col items-center">
@@ -201,15 +291,16 @@ export default function CreateListing(props) {
                 <span className="text-xs">₹ /INR</span>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            {
+              formData.offer &&( <div className="flex items-center gap-2">
               <input
                 type="number"
                 id="discountPrice"
                 required
                 min="0"
+                max='1000000'
                 onChange={handleFormChange}
-               checked={formData.discountPrice}
-
+                checked={formData.discountPrice}
                 className="p-3 border border-gray-300 rounded-lg text-black"
               />
               <div className="flex flex-col items-center">
@@ -218,6 +309,9 @@ export default function CreateListing(props) {
                 <span className="text-xs">₹ /INR</span>
               </div>
             </div>
+            )
+            }
+           
           </div>
         </div>
         <div className=" flex flex-col flex-1 text-white gap-4">
@@ -245,24 +339,33 @@ export default function CreateListing(props) {
               className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg 
                         disabled:opacity-80"
             >
-            
-              {
-                uploadingProgress?'Uploading...':'Upload'
-              }
+              {uploadingProgress ? "Uploading..." : "Upload"}
             </button>
           </div>
-          <p className="text-red-700 text-sm">{imageUploadError && imageUploadError}</p>
-          {
-            formData.imageUrls.length>0 && formData.imageUrls.map((url,index)=>(
-                <div key={url} className="flex justify-between p-3 border items-center" >
-                <img src={url} alt="listing image" className="w-40 h-40 object-cover rounded-lg"/>
-                <button type="button" onClick={()=>handleRemoveImage(index)} className="p-3 text-red-700 rounded-lg uppercase
-                hover:opacity-95 disabled:opacity-75">Delete</button>
-                </div>
-            ))
-          }
-          <button
-            className=" p-3 bg-richblack-900 text-white rounded-lg 
+          {/* <p className="text-red-700 text-sm">{imageUploadError && imageUploadError}</p> */}
+          {formData.imageUrls.length > 0 &&
+            formData.imageUrls.map((url, index) => (
+              <div
+                key={url}
+                className="flex justify-between p-3 border items-center"
+              >
+                <img
+                  src={url}
+                  alt="listing image"
+                  className="w-40 h-40 object-cover rounded-lg"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveImage(index)}
+                  className="p-3 text-red-700 rounded-lg uppercase
+                hover:opacity-95 disabled:opacity-75"
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          <button disabled={loading|| uploadingProgress}
+            className=" p-3 bg-richblack-700 text-white rounded-lg 
                 uppercase"
           >
             Create Listing

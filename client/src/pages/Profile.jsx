@@ -7,10 +7,11 @@ import { updateUserFailure, updateUserSuccess, updateUserStart, deleteUserFailur
 import { useDispatch } from 'react-redux'
 import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
+import { logout } from '../services/operations/authAPI'
 
 
 
-// import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 export default function Profile() {
   const fileRef = useRef(null)
@@ -22,6 +23,7 @@ export default function Profile() {
   const [formData, setFormData] = useState({});
 
   const dispatch = useDispatch();
+  const navigate= useNavigate();
 
   console.log("ccurrentUser", currentUser);
 
@@ -30,7 +32,7 @@ export default function Profile() {
   console.log(" file uploading percentate", fileUploadPer);
   // console.log("file uploading image is",file);
   console.log("Form data is a", formData);
-  console.log("user image=>", currentUser.user.avatar);
+  // console.log("user image=>", currentUser.user.avatar);
   useEffect(() => {
     if (file) {
       handleFileUpload(file);
@@ -139,7 +141,7 @@ export default function Profile() {
         return;
       }
 
-      localStorage.removeItem('access_token');
+      localStorage.removeItem('token');
 
 
       localStorage.removeItem('persist:root'); // Just to ensure it's cleared
@@ -158,25 +160,26 @@ export default function Profile() {
 
   }
   const handleSignOut = async() => {
+    dispatch(logout(navigate));
 
-    try {
-      dispatch(signOutUserStart());
-      const res= await fetch('/api/auth/signout',{
-        method:'GET'
-      });
-      const data= await res.json();
-      if(data.success==false){
-        toast.error(data.message);
-        dispatch(signOutUserFailure(data.message));
-        return;
-      }
-      toast.success(data.message);
-      dispatch(signOutUserSuccess(data));
+    // try {
+    //   dispatch(signOutUserStart());
+    //   const res= await fetch('/api/auth/signout',{
+    //     method:'GET'
+    //   });
+    //   const data= await res.json();
+    //   if(data.success==false){
+    //     toast.error(data.message);
+    //     dispatch(signOutUserFailure(data.message));
+    //     return;
+    //   }
+    //   toast.success(data.message);
+    //   dispatch(signOutUserSuccess(data));
       
-    } catch (error) {
-      dispatch(signOutUserFailure(error.message));
+    // } catch (error) {
+    //   dispatch(signOutUserFailure(error.message));
       
-    }
+    // }
    
   }
   return (
@@ -189,7 +192,7 @@ export default function Profile() {
           hidden
 
           accept='image/*' />
-        <img onClick={() => fileRef.current.click()} src={formData.avatar || currentUser.user.avatar} alt="Profile" className='rounded-full 
+        <img onClick={() => fileRef.current.click()} src={formData.avatar || currentUser.avatar} alt="Profile" className='rounded-full 
         h-24 w-24 object-cover cursor-pointer self-center mt-2 text-white'/>
         <p className='text-sm self-center'>{
           fileUploadError ? <span className='text-red-700'>Error in Uploading Image ( Image must be less then 2mb)</span>
@@ -209,7 +212,7 @@ export default function Profile() {
         </p>
         <input type="text" placeholder='Username' id='userName' className='
         border p-3 rounded-lg'
-          defaultValue={currentUser.user.userName}
+          defaultValue={currentUser.userName}
           onChange={handleChange}
         />
         <input type="text" placeholder='New Password' id='password' className='
