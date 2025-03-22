@@ -10,8 +10,8 @@
     --richblack-700: #2C333F;
     --richblack-800: #161D29;
     --richblack-900: #000814;
-  } */
-  
+  }
+   */
   body {
     background-color: var(--richblack-900); /* Use any of your custom shades */
   }

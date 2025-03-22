@@ -1,6 +1,7 @@
 import express from 'express'
 import { errorHandler, successHandler } from '../utils/error.js';
 import User from '../model/useModel.js'
+import Listing from '../model/listingModel.js';
 export const test=(req,res)=>{
     res.json({
         message:"Api router form controller"
@@ -92,4 +93,32 @@ export const deleteUser= async(req,res, next)=>{
      })
     }
 
+}
+
+export const getUserListings= async(req,res)=>{
+    console.log("first")
+    console.log(req.user.id)
+    console.log("first")
+
+    if(req.user.id===req.params.id){
+
+        try {
+            console.log("thrir")
+
+            const listings= await Listing.find({userRef:req.params.id})
+
+             res.status(200).json({
+                success:true, 
+                listings
+            })
+            
+        } catch (error) {
+            console.log("errorn in Get useer listings",error)
+            
+        }
+        
+    }
+    else{
+        return next(errorHandler(401,'You can only view your own listings'))
+    }
 }

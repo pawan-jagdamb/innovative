@@ -28,6 +28,7 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 app. use(cookieParser());
+console.log("first")
  
 app.use('/api/user',userRouter);   
 
