@@ -9,5 +9,6 @@ export const endpoints = {
     RESETPASSWORD_API: BASE_URL + "/auth/reset-password",
     LOGOUT_API: BASE_URL+"/auth/signout",
     CREATE_LISTING:BASE_URL+ '/listing/create',
-    SHOW_LISTING:BASE_URL+ '/user/listings/'
+    SHOW_LISTING:BASE_URL+ '/user/listings',
+    DELETE_LISTING:BASE_URL+'/listing/delete',
   }

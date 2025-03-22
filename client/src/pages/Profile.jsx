@@ -42,6 +42,7 @@ export default function Profile() {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const [userListings,setUserListings]=useState([])
+  const [showList,setShowList]=useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -162,12 +163,12 @@ export default function Profile() {
   };
   const handleShowListings = async (req, res) => {
     const toastId = toast.loading("Fetching data");
-
+      setShowList(false);
     try {
       console.log(currentUser._id);
       const response = await apiConnector(
         "GET",
-        `http://localhost:5000/api/user/listings/67dda7bd9189c563bcbfc745`,
+        `${SHOW_LISTING}/${currentUser._id}`,
         null,
         {
           Authorization: `Bearer ${currentUser.token}`,
@@ -186,6 +187,7 @@ export default function Profile() {
       }
       console.log("response.data..istings",response.data.listings)
       setUserListings(response.data.listings)
+      setShowList(true);
         // console.log("userListing",userListings)
 
     } catch (error) {
@@ -193,6 +195,7 @@ export default function Profile() {
         "Error fetching listings:",
          error.message
       );
+      setShowList(false);
       toast.error(error.response?.data?.message || "Something went wrong!");
     }
     toast.dismiss(toastId);
@@ -308,10 +311,15 @@ export default function Profile() {
         className=" bg-richblack-700 text-whited rounded-lg
         p-3 uppercase text-white hover:opacity-50 disabled:opacity-80 w-full"
       >
-        {" "}
+       
         Show listing
       </button>
-      <ShowListnings userListings={userListings}/>
+      {
+        showList&&(
+
+      <ShowListnings Listing={userListings}/>
+        )
+      }
     </div>
   );
 }

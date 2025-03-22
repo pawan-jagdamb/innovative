@@ -1,9 +1,47 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { endpoints } from '../services/apis';
+import { apiConnector } from '../services/apiConnector';
+import toast from 'react-hot-toast';
+import { useSelector } from 'react-redux';
+const {DELETE_LISTING}=endpoints;
 
-export const ShowListnings = (userListing) => {
-    const userListings= userListing.userListings;
-    console.log("her",userListings)
+
+export const ShowListnings = (Listing) => {
+    const { currentUser } = useSelector((state) => state.user);
+  
+
+const [userListings,setUserListings]=useState(Listing.Listing)
+    // const userListings= Listing.userListings;
+    // useEffect(()=>{
+    //   setUserListings(Listing.Listing);
+    // },[userListings])
+    console.log("her",Listing);
+    // setUserListings(Listing.listing);
+    const handleDelete=async(listingId)=>{
+      console.log(listingId)
+      try {
+        const response= await apiConnector('DELETE',`${DELETE_LISTING}/${listingId}`,
+          null,
+          {
+            Authorization: `Bearer ${currentUser.token}`,
+          }
+        )
+        if(!response.data.success){
+          toast.error("Error in deleting listing")
+
+        }
+        toast.success("Listing deleted Successfully")
+        setUserListings((prev)=>prev.filter((listing)=>listing._id!==listingId))
+
+        console.log("response",response)
+      } catch (error) {
+        toast.error("Error in deleting listings")
+        console.log(error)
+        
+      }
+
+    }
   return (
     <>
 
@@ -31,8 +69,8 @@ export const ShowListnings = (userListing) => {
             </p>
             </Link>
             <div className='flex flex-col items-center'>
-            <button className='text-red-700'>Delete</button>
-            <button className='text-green-700'>Edit</button>
+            <button onClick={()=>handleDelete(listing._id)} className='text-red-700'>Delete</button>
+            <button  className='text-green-700'>Edit</button>
 
             </div>
 
