@@ -11,4 +11,6 @@ export const endpoints = {
     CREATE_LISTING:BASE_URL+ '/listing/create',
     SHOW_LISTING:BASE_URL+ '/user/listings',
     DELETE_LISTING:BASE_URL+'/listing/delete',
+    GET_A_LISTING:BASE_URL+'/listing/get',
+    UPDATE_LISTING:BASE_URL+'/listing/update',
   }

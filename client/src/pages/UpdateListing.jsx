@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   getDownloadURL,
@@ -11,16 +11,17 @@ import toast from "react-hot-toast";
 import { apiConnector } from "../services/apiConnector";
 import { endpoints } from "../services/apis";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 
-const { CREATE_LISTING } = endpoints;
+const { GET_A_LISTING ,UPDATE_LISTING} = endpoints;
 
 
-export default function CreateListing(props) {
+export default function UpdateListing(props) {
   const navigate= useNavigate();
   const {currentUser}= useSelector(state=>state.user)
   const [files, setFiles] = useState([]);
+  const params= useParams();
 
   console.log("Current user",currentUser);
   const [formData, setFormData] = useState({
@@ -41,6 +42,29 @@ export default function CreateListing(props) {
   // console.log("files",files);
 
   console.log("Form Data", formData);
+  useEffect(()=>{
+    const fetchListing= async()=>{
+      const listingId= params.listingId;
+      const response= await apiConnector("GET",`${GET_A_LISTING}/${listingId}`,null)
+
+      console.log("Response",response);
+      if(!response.data.success){
+        toast.error("Error in fetching data")
+        return;
+
+      }
+      // const data=await response.data.json();
+      setFormData(response.data.listing)
+      console.log("response",response)
+      console.log("Listing id",listingId);
+
+    }
+
+    fetchListing();
+    
+
+  },[])
+
   function isFileTypeSupported(type) {
     const supportedType = ["jpeg", "jpg", "png"];
 
@@ -173,6 +197,7 @@ export default function CreateListing(props) {
 console.log("threee")
       setLoading(true);
       setError(false);
+      params
       const newFormData={
         ...formData,userRef:`${currentUser._id}`  
       }
@@ -180,7 +205,7 @@ console.log("threee")
      
       const response = await apiConnector(
         "POST",
-        CREATE_LISTING,
+        `${UPDATE_LISTING}/${params.listingId}`,
         newFormData,   {
           "Content-Type": "application/json",
           Authorization:`Bearer ${currentUser.token}`
@@ -190,18 +215,22 @@ console.log("threee")
       );
       toast.dismiss(toastId);
       console.log("four")
-      console.log(" response after submint listing data",response.data)
+      console.log(" response after submint listing data",response)
 
       // const data= await response.json();
       // console.log("Data  after submmit in creating listing",data);
       setLoading(false);
       if(!response.data.success){
         setError(response.data.message)
+        console.log(response)
+        toast.error("Error in updating listing")
         return
       }
       const data= response.data;
+      toast.success("Listing updagted successfully")
+
       console.log("Data in create listing ",data);
-      navigate(`/listing/${data.listing._id}`)
+      navigate(`/listing/${data.updateListing._id}`)
     } catch (error) {
       toast.dismiss(toastId);
       setError(error.message);
@@ -214,7 +243,7 @@ console.log("threee")
   return (
     <main className="p-3 max-w-4xl mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7 text-white">
-        Create Listing
+        Update Listing
       </h1>
 
       <form
@@ -368,7 +397,7 @@ console.log("threee")
             className=" p-3 bg-richblack-700 text-white rounded-lg 
                 uppercase"
           >
-            Create Listing
+            Update Listing
           </button>
         </div>
       </form>
