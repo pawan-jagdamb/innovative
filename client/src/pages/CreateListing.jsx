@@ -255,14 +255,14 @@ console.log("threee")
 
           <div className="flex gap-6 flex-wrap text-white">
             <div className="flex gap-2">
-              <input
+              {/* <input
                 type="checkbox"
                 id="furnished"
                 className="w-5"
                 onChange={handleFormChange}
                 checked={formData.furnished}
               />
-              <span>Furnished</span>
+              <span>Furnished</span> */}
             </div>
             <div className="flex gap-2">
               <input
