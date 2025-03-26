@@ -13,8 +13,8 @@ const connect = () => {
     .catch((error) => {
         console.log("Database connection error");
         console.error(error);
-        process.exit(1);
+        process.exit(1); 
     });
-};
+}; 
 
 export default connect;

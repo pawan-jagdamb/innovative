@@ -13,4 +13,5 @@ export const endpoints = {
     DELETE_LISTING:BASE_URL+'/listing/delete',
     GET_A_LISTING:BASE_URL+'/listing/get',
     UPDATE_LISTING:BASE_URL+'/listing/update',
-  }
+    GET_USER:BASE_URL+ "/user",
+  } 

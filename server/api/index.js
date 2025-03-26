@@ -32,7 +32,7 @@ console.log("first")
  
 app.use('/api/user',userRouter);   
 
-app.use('/api/auth',authRouter); 
+app.use('/api/auth',authRouter);  
 app.use('/api/listing',listingRoute);
 
 app.use((error,req,res,next)=>{
