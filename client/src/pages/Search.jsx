@@ -1,11 +1,115 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { apiConnector } from '../services/apiConnector';
+import { endpoints } from '../services/apis';
 
+const {GET_LISTING}=endpoints
 export const Search = () => {
+    const [sidebarData,setSidebarData]= useState({
+        searchTerm:'',
+        type:'all',
+        offer:false,
+        sort:'created_at',
+        order:'desc'
+    })
+
+    const [loading,setLoading]= useState(false);
+    const [listing,setListing]=useState([]);
+    useEffect(()=>{
+        const urlParams = new URLSearchParams(location.search);
+        const searchTermFromUrl = urlParams.get('searchTerm');
+        const typeFromUrl = urlParams.get('type');
+       
+        const offerFromUrl = urlParams.get('offer');
+        const sortFromUrl = urlParams.get('sort');
+        const orderFromUrl = urlParams.get('order');
+
+        if (
+            searchTermFromUrl ||
+            typeFromUrl ||
+         
+            offerFromUrl ||
+            sortFromUrl ||
+            orderFromUrl
+          ) {
+            setSidebarData({
+              searchTerm: searchTermFromUrl || '',
+              type: typeFromUrl || 'all',
+             
+              offer: offerFromUrl === 'true' ? true : false,
+              sort: sortFromUrl || 'created_at',
+              order: orderFromUrl || 'desc',
+            });
+        }
+
+        const fetchListing= async()=>{
+            setLoading(true);
+            const searchQuery = urlParams.toString();
+            const response= await apiConnector("GET",`${GET_LISTING}/get?${searchQuery}`,null);
+
+            console.log("response",response.data
+
+
+
+            )
+
+        }
+        fetchListing();
+        
+
+
+    },[location.search])
+
+    const navigate= useNavigate();
+    console.log("side barData",sidebarData)
+    const handleChange =(e)=>{
+
+        if(e.target.id==='all'){
+            setSidebarData({...sidebarData,type:e.target.id})
+
+        }
+        if(e.target.id==='searchTerm'){
+            setSidebarData({...sidebarData,searchTerm:e.target.value})
+        }
+        if(e.target.id==='offer'){
+            setSidebarData({...sidebarData,[e.target.id]:e.target.checked|| e.target.checked==='true'?true:false})
+        }
+
+        if(e.target.id==='sort_order'){
+            const sort= e.target.value.split('_')[0]||'created_at';
+            const order= e.target.value.split('_')[1]||'desc';
+
+            setSidebarData({...sidebarData,sort,order})
+        }
+
+
+   
+
+    }
+
+    const handleSubmit=(e)=>{
+        e.preventDefault();
+
+        const urlParams= new URLSearchParams();
+        urlParams.set('searchTerm',sidebarData.searchTerm);
+        urlParams.set('type',sidebarData.type);
+        urlParams.set('offer',sidebarData.offer);
+        urlParams.set('sort',sidebarData.sort);
+        urlParams.set('order',sidebarData.order);
+        const searchQuery= urlParams.toString();
+
+
+        navigate(`/search?${searchQuery}`)
+
+
+
+    }
+
   return (
         <div className='flex flex-col md:flex-row text-richblack-100'>
             <div className='p-7 border-b-2 sm:border-r-2 md:min-h-screen 
             '>
-                <form className='flex flex-col gap-8'>
+                <form onSubmit={handleSubmit} className='flex flex-col gap-8'>
                 <div className='flex items-center gap-2 '>
                     <lagel
                     className='whitespace-nowrap font-semibold' 
@@ -14,6 +118,8 @@ export const Search = () => {
                         type='text'
                         id='searchTerm'
                         placeholder='Search...'
+                        value={sidebarData.searchTerm}
+                        onChange={handleChange}
                         className='border rounded-lg  p-3 w-full'
                     />
                 </div>
@@ -21,35 +127,31 @@ export const Search = () => {
                     <label className='text-richblack-100'>Type:</label>
                     <div className='flex gap-2'>
                         <input type='checkbox'
-                            id='all'
+                            id='offer'
                             className='w-5'
+                            onChange={handleChange}
+
 
                         />
                         <span>offer</span>
-                        {/* <span>Sale</span> */}
+                    
 
                     </div>
-                    <div className='flex gap-2'>
-                        <input type='checkbox'
-                            id='all'
-                            className='w-5'
-
-                        />
-                        {/* <span>offer</span> */}
-                        <span>Sale</span>
-
-                    </div>
+                  
+                  
                 </div>
 
                 <div className='flex items-center gap-2 text-richblack-400'>
                     <label>Sort:</label>
                     <select id='sort_order'
                     className='border rounded-lg p-3'
+                    onChange={handleChange}
+                    defaultValue={'created_at_desc'}
                     >
-                        <option >Price High to low</option>
-                        <option >Price Low to High</option>
-                        <option >Latest</option>
-                        <option>Oldest</option>
+                        <option value={"regularPrice_desc"} >Price High to low</option>
+                        <option value={"regularPrice_asc"} >Price Low to High</option>
+                        <option value={"createdAt_desc"}>Latest</option>
+                        <option value={"createdAt_asc"}>Oldest</option>
                     </select>
                 </div>
                 <button className='bg-richblack-700 p-3 text-richblack-200
