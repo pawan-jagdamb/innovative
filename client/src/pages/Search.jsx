@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { apiConnector } from '../services/apiConnector';
 import { endpoints } from '../services/apis';
+import toast from 'react-hot-toast';
+import { ListingItem } from '../components/ListingItem';
 
 const {GET_LISTING}=endpoints
 export const Search = () => {
@@ -14,7 +16,7 @@ export const Search = () => {
     })
 
     const [loading,setLoading]= useState(false);
-    const [listing,setListing]=useState([]);
+    const [listings,setListings]=useState([]);
     useEffect(()=>{
         const urlParams = new URLSearchParams(location.search);
         const searchTermFromUrl = urlParams.get('searchTerm');
@@ -44,6 +46,7 @@ export const Search = () => {
 
         const fetchListing= async()=>{
             setLoading(true);
+            const toastId= toast.loading("Loading")
             const searchQuery = urlParams.toString();
             const response= await apiConnector("GET",`${GET_LISTING}/get?${searchQuery}`,null);
 
@@ -52,6 +55,11 @@ export const Search = () => {
 
 
             )
+            setListings(response.data.listings)
+            toast.dismiss(toastId);
+            console.log("Listing",listings);
+            toast.success("Data Fetched Successfully")
+            setLoading(false);
 
         }
         fetchListing();
@@ -74,7 +82,6 @@ export const Search = () => {
         if(e.target.id==='offer'){
             setSidebarData({...sidebarData,[e.target.id]:e.target.checked|| e.target.checked==='true'?true:false})
         }
-
         if(e.target.id==='sort_order'){
             const sort= e.target.value.split('_')[0]||'created_at';
             const order= e.target.value.split('_')[1]||'desc';
@@ -111,9 +118,9 @@ export const Search = () => {
             '>
                 <form onSubmit={handleSubmit} className='flex flex-col gap-8'>
                 <div className='flex items-center gap-2 '>
-                    <lagel
+                    <label
                     className='whitespace-nowrap font-semibold' 
-                    >Search Term:</lagel>
+                    >Search Term:</label>
                     <input
                         type='text'
                         id='searchTerm'
@@ -163,6 +170,18 @@ export const Search = () => {
             </div>
             <div className=''>
                 <h1 className='text-3xl font-semibold  p-3 text-richblack-600'>Listing Results</h1>
+            </div>
+            <div className='p-7 flex flex-col gap-2'>
+                {!loading&& listings.length===0 &&(
+
+                    <p className='text-xl text-pink-700 '> No Item Found</p>
+                 
+                )}
+                {
+                    !loading && listings && listings.map((listing)=>(
+                        <ListingItem key={listing._id} listing={listing}/>
+                    ))
+                }
             </div>
         </div>
   )
