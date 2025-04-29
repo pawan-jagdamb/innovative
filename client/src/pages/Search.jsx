@@ -171,7 +171,7 @@ export const Search = () => {
             <div className=''>
                 <h1 className='text-3xl font-semibold  p-3 text-richblack-600'>Listing Results</h1>
             </div>
-            <div className='p-7 flex flex-col gap-2'>
+            <div className='p-7 flex lg:flex-row flex-col  gap-4'>
                 {!loading&& listings.length===0 &&(
 
                     <p className='text-xl text-pink-700 '> No Item Found</p>
