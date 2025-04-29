@@ -251,26 +251,10 @@ console.log("threee")
           />
 
           {/* Category */}
-          <div className="flex flex-col gap-3">
-            <label htmlFor="category" className="font-semibold text-gray-700">
-              Category
-            </label>
-            <select
-              id="category"
-              value={formData.category}
-              onChange={handleCategoryChange}
-              className="border p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-            >
-              <option value="">Select Category</option>
-              <option value="Electronics">Electronics</option>
-              <option value="Clothing">Clothing</option>
-              <option value="Books">Books</option>
-              <option value="Furniture">Furniture</option>
-            </select>
-          </div>
+          
 
           {/* Availability */}
-          <div className="flex items-center gap-3">
+          {/* <div className="flex items-center gap-3">
             <label htmlFor="availability" className="font-semibold text-gray-700">
               Availability
             </label>
@@ -283,34 +267,94 @@ console.log("threee")
               <option value="In Stock">In Stock</option>
               <option value="Out of Stock">Out of Stock</option>
             </select>
-          </div>
+          </div> */}
 
           {/* Payment Methods */}
-          <div className="flex flex-col gap-3">
+          {/* <div className="flex flex-col gap-3">
             <label className="font-semibold text-gray-700">Payment Methods</label>
             <div className="flex gap-3">
               <input
                 type="checkbox"
                 value="Credit Card"
-                checked={formData.paymentMethods.includes("Credit Card")}
+                // checked={formData.paymentMethods.includes("Credit Card")}
                 onChange={handlePaymentMethodsChange}
               />
               <span>Credit Card</span>
               <input
                 type="checkbox"
                 value="PayPal"
-                checked={formData.paymentMethods.includes("PayPal")}
+                // checked={formData.paymentMethods.includes("PayPal")}
                 onChange={handlePaymentMethodsChange}
               />
               <span>PayPal</span>
               <input
                 type="checkbox"
                 value="Bank Transfer"
-                checked={formData.paymentMethods.includes("Bank Transfer")}
+                // checked={formData.paymentMethods.includes("Bank Transfer")}
                 onChange={handlePaymentMethodsChange}
               />
               <span>Bank Transfer</span>
             </div>
+          </div> */}
+          <div className="flex gap-6 flex-wrap text-white">
+            <div className="flex gap-2">
+              {/* <input
+                type="checkbox"
+                id="furnished"
+                className="w-5"
+                onChange={handleFormChange}
+                checked={formData.furnished}
+              />
+              <span>Furnished</span> */}
+            </div>
+            <div className="flex gap-2 text-black">
+              <input
+                type="checkbox"
+                id="offer"
+                className="w-5"
+                onChange={handleFormChange}
+                checked={formData.offer}
+              />
+              <span>Offer</span>
+            </div>
+            <div className="text-white flex flex-wrap gap-6 text-black">
+            <div className="flex items-center gap-2 text-black">
+              <input
+                type="number"
+                id="regularPrice"
+                required
+                min="0"
+                onChange={handleFormChange}
+                checked={formData.regularPrice}
+                className="p-3 border border-gray-300 rounded-lg text-black"
+              />
+              <div className="flex flex-col items-center">
+                <p>Regular price </p>
+                <span className="text-xs">₹ /INR</span>
+              </div>
+            </div>
+            {
+              formData.offer &&( <div className="flex items-center gap-2 text-black">
+              <input
+                type="number"
+                id="discountPrice"
+                required
+                min="0"
+                max='1000000'
+                onChange={handleFormChange}
+                checked={formData.discountPrice}
+                className="p-3 border border-gray-300 rounded-lg text-black"
+              />
+              <div className="flex flex-col items-center">
+                <p>Discount price</p>
+
+                <span className="text-xs">₹ /INR</span>
+              </div>
+            </div>
+            )
+            }
+           
+          </div>
           </div>
         </div>
 

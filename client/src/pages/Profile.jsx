@@ -141,7 +141,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="max-w-md mx-auto px-4 py-4 bg-blue-25 rounded-none shadow-sm mt-10 text-sm">
+    <div className="max-w-[700px] mx-auto px-4 py-4 bg-blue-25 rounded-none shadow-sm mt-10 text-md">
       <h1 className="text-xl font-semibold text-center text-gray-800 mb-3">Profile</h1>
 
       <form onSubmit={handleSubmit} className="space-y-3">
