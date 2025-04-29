@@ -1,188 +1,257 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { apiConnector } from '../services/apiConnector';
 import { endpoints } from '../services/apis';
 import toast from 'react-hot-toast';
 import { ListingItem } from '../components/ListingItem';
 
-const {GET_LISTING}=endpoints
+const { GET_LISTING } = endpoints;
+
 export const Search = () => {
-    const [sidebarData,setSidebarData]= useState({
-        searchTerm:'',
-        type:'all',
-        offer:false,
-        sort:'created_at',
-        order:'desc'
-    })
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    const [loading,setLoading]= useState(false);
-    const [listings,setListings]=useState([]);
-    useEffect(()=>{
-        const urlParams = new URLSearchParams(location.search);
-        const searchTermFromUrl = urlParams.get('searchTerm');
-        const typeFromUrl = urlParams.get('type');
-       
-        const offerFromUrl = urlParams.get('offer');
-        const sortFromUrl = urlParams.get('sort');
-        const orderFromUrl = urlParams.get('order');
+  const [sidebarData, setSidebarData] = useState({
+    searchTerm: '',
+    type: 'all',
+    offer: false,
+    category: 'all',
+    location: '',
+    minPrice: '',
+    maxPrice: '',
+    sort: 'createdAt',
+    order: 'desc',
+  });
 
-        if (
-            searchTermFromUrl ||
-            typeFromUrl ||
-         
-            offerFromUrl ||
-            sortFromUrl ||
-            orderFromUrl
-          ) {
-            setSidebarData({
-              searchTerm: searchTermFromUrl || '',
-              type: typeFromUrl || 'all',
-             
-              offer: offerFromUrl === 'true' ? true : false,
-              sort: sortFromUrl || 'created_at',
-              order: orderFromUrl || 'desc',
-            });
-        }
+  const [loading, setLoading] = useState(false);
+  const [listings, setListings] = useState([]);
 
-        const fetchListing= async()=>{
-            setLoading(true);
-            const toastId= toast.loading("Loading")
-            const searchQuery = urlParams.toString();
-            const response= await apiConnector("GET",`${GET_LISTING}/get?${searchQuery}`,null);
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
 
-            console.log("response",response.data
+    const updatedData = {
+      searchTerm: urlParams.get('searchTerm') || '',
+      type: urlParams.get('type') || 'all',
+      offer: urlParams.get('offer') === 'true',
+      category: urlParams.get('category') || 'all',
+      location: urlParams.get('location') || '',
+      minPrice: urlParams.get('minPrice') || '',
+      maxPrice: urlParams.get('maxPrice') || '',
+      sort: urlParams.get('sort') || 'createdAt',
+      order: urlParams.get('order') || 'desc',
+    };
+    setSidebarData(updatedData);
 
+    const fetchListings = async () => {
+      setLoading(true);
+      const toastId = toast.loading('Fetching listings...');
+      try {
+        const response = await apiConnector(
+          'GET',
+          `${GET_LISTING}/get?${urlParams.toString()}`,
+          null
+        );
+        setListings(response.data.listings || []);
+        toast.success('Listings loaded!');
+      } catch (error) {
+        console.error(error);
+        toast.error('Failed to fetch listings.');
+      }
+      toast.dismiss(toastId);
+      setLoading(false);
+    };
 
+    fetchListings();
+  }, [location.search]);
 
-            )
-            setListings(response.data.listings)
-            toast.dismiss(toastId);
-            console.log("Listing",listings);
-            toast.success("Data Fetched Successfully")
-            setLoading(false);
+  const handleChange = (e) => {
+    const { id, value, checked, type } = e.target;
+    setSidebarData((prev) => ({
+      ...prev,
+      [id]: type === 'checkbox' ? checked : value,
+    }));
+  };
 
-        }
-        fetchListing();
-        
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const urlParams = new URLSearchParams();
 
+    Object.entries(sidebarData).forEach(([key, value]) => {
+      if (value !== '' && value !== 'all') {
+        urlParams.set(key, value);
+      }
+    });
 
-    },[location.search])
-
-    const navigate= useNavigate();
-    console.log("side barData",sidebarData)
-    const handleChange =(e)=>{
-
-        if(e.target.id==='all'){
-            setSidebarData({...sidebarData,type:e.target.id})
-
-        }
-        if(e.target.id==='searchTerm'){
-            setSidebarData({...sidebarData,searchTerm:e.target.value})
-        }
-        if(e.target.id==='offer'){
-            setSidebarData({...sidebarData,[e.target.id]:e.target.checked|| e.target.checked==='true'?true:false})
-        }
-        if(e.target.id==='sort_order'){
-            const sort= e.target.value.split('_')[0]||'created_at';
-            const order= e.target.value.split('_')[1]||'desc';
-
-            setSidebarData({...sidebarData,sort,order})
-        }
-
-
-   
-
-    }
-
-    const handleSubmit=(e)=>{
-        e.preventDefault();
-
-        const urlParams= new URLSearchParams();
-        urlParams.set('searchTerm',sidebarData.searchTerm);
-        urlParams.set('type',sidebarData.type);
-        urlParams.set('offer',sidebarData.offer);
-        urlParams.set('sort',sidebarData.sort);
-        urlParams.set('order',sidebarData.order);
-        const searchQuery= urlParams.toString();
-
-
-        navigate(`/search?${searchQuery}`)
-
-
-
-    }
+    navigate(`/search?${urlParams.toString()}`);
+  };
 
   return (
-        <div className='flex flex-col md:flex-row text-richblack-100'>
-            <div className='p-7 border-b-2 sm:border-r-2 md:min-h-screen 
-            '>
-                <form onSubmit={handleSubmit} className='flex flex-col gap-8'>
-                <div className='flex items-center gap-2 '>
-                    <label
-                    className='whitespace-nowrap font-semibold' 
-                    >Search Term:</label>
-                    <input
-                        type='text'
-                        id='searchTerm'
-                        placeholder='Search...'
-                        value={sidebarData.searchTerm}
-                        onChange={handleChange}
-                        className='border rounded-lg  p-3 w-full'
-                    />
-                </div>
-                <div className='flex gap-2 flex-wrap items-center text-richblack-100'>
-                    <label className='text-richblack-100'>Type:</label>
-                    <div className='flex gap-2'>
-                        <input type='checkbox'
-                            id='offer'
-                            className='w-5'
-                            onChange={handleChange}
+    <div className="flex flex-col md:flex-row p-5 gap-5 bg-gradient-to-r from-blue-500 to-richblack-900 min-h-screen">
+      {/* Sidebar */}
+      <div className="md:w-1/4 p-5 bg-white shadow-xl rounded-1xl sticky top-20 h-fit">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          {/* Search Input */}
+          <div>
+            <label htmlFor="searchTerm" className="block font-semibold text-blue-900 mb-2">
+              Search
+            </label>
+            <input
+              type="text"
+              id="searchTerm"
+              value={sidebarData.searchTerm}
+              onChange={handleChange}
+              placeholder="Item name..."
+              className="border p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-300"
+            />
+          </div>
 
+          {/* Type Filter */}
+          <div>
+            <label htmlFor="type" className="block font-semibold text-blue-900 mb-2">
+              Type
+            </label>
+            <select
+              id="type"
+              value={sidebarData.type}
+              onChange={handleChange}
+              className="border p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-300"
+            >
+              <option value="all">All</option>
+              <option value="sale">Sale</option>
+              <option value="rent">Rent</option>
+            </select>
+          </div>
 
-                        />
-                        <span>offer</span>
-                    
+          {/* Offer Checkbox */}
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="offer"
+              checked={sidebarData.offer}
+              onChange={handleChange}
+              className="w-5 h-5"
+            />
+            <label htmlFor="offer" className="text-blue-800">
+              Offer Only
+            </label>
+          </div>
 
-                    </div>
-                  
-                  
-                </div>
+          {/* Category Filter */}
+          <div>
+            <label htmlFor="category" className="block font-semibold text-blue-900 mb-2">
+              Category
+            </label>
+            <select
+              id="category"
+              value={sidebarData.category}
+              onChange={handleChange}
+              className="border p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-300"
+            >
+              <option value="all">All</option>
+              <option value="books">Books</option>
+              <option value="electronics">Electronics</option>
+              <option value="furniture">Furniture</option>
+              <option value="clothes">Clothes</option>
+              <option value="stationary">Stationary</option>
+              <option value="others">Others</option>
+            </select>
+          </div>
 
-                <div className='flex items-center gap-2 text-richblack-400'>
-                    <label>Sort:</label>
-                    <select id='sort_order'
-                    className='border rounded-lg p-3'
-                    onChange={handleChange}
-                    defaultValue={'created_at_desc'}
-                    >
-                        <option value={"regularPrice_desc"} >Price High to low</option>
-                        <option value={"regularPrice_asc"} >Price Low to High</option>
-                        <option value={"createdAt_desc"}>Latest</option>
-                        <option value={"createdAt_asc"}>Oldest</option>
-                    </select>
-                </div>
-                <button className='bg-richblack-700 p-3 text-richblack-200
-                rounded-lg uppercase hover:opacity-95'>search</button>
+          {/* Location Filter */}
+          <div>
+            <label htmlFor="location" className="block font-semibold text-blue-900 mb-2">
+              Location
+            </label>
+            <input
+              type="text"
+              id="location"
+              value={sidebarData.location}
+              onChange={handleChange}
+              placeholder="Campus / Hostel..."
+              className="border p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-300"
+            />
+          </div>
 
-
-
-                </form>
+          {/* Price Range */}
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <label htmlFor="minPrice" className="block font-semibold text-blue-900 mb-2">
+                Min Price
+              </label>
+              <input
+                type="number"
+                id="minPrice"
+                value={sidebarData.minPrice}
+                onChange={handleChange}
+                placeholder="₹ Min"
+                className="border p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-300"
+              />
             </div>
-            <div className=''>
-                <h1 className='text-3xl font-semibold  p-3 text-richblack-600'>Listing Results</h1>
+            <div className="flex-1">
+              <label htmlFor="maxPrice" className="block font-semibold text-blue-900 mb-2">
+                Max Price
+              </label>
+              <input
+                type="number"
+                id="maxPrice"
+                value={sidebarData.maxPrice}
+                onChange={handleChange}
+                placeholder="₹ Max"
+                className="border p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-300"
+              />
             </div>
-            <div className='p-7 flex lg:flex-row flex-col  gap-4'>
-                {!loading&& listings.length===0 &&(
+          </div>
 
-                    <p className='text-xl text-pink-700 '> No Item Found</p>
-                 
-                )}
-                {
-                    !loading && listings && listings.map((listing)=>(
-                        <ListingItem key={listing._id} listing={listing}/>
-                    ))
-                }
-            </div>
-        </div>
-  )
-}
+          {/* Sort By */}
+          <div>
+            <label htmlFor="sort_order" className="block font-semibold text-blue-900 mb-2">
+              Sort By
+            </label>
+            <select
+              id="sort_order"
+              onChange={(e) => {
+                const [sort, order] = e.target.value.split('_');
+                setSidebarData((prev) => ({ ...prev, sort, order }));
+              }}
+              defaultValue="createdAt_desc"
+              className="border p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-300"
+            >
+              <option value="createdAt_desc">Newest First</option>
+              <option value="createdAt_asc">Oldest First</option>
+              <option value="regularPrice_desc">Price High to Low</option>
+              <option value="regularPrice_asc">Price Low to High</option>
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            className="bg-blue-700 hover:bg-blue-600 p-3 text-white font-semibold rounded-lg uppercase transition-all duration-200"
+          >
+            Search
+          </button>
+        </form>
+      </div>
+
+      {/* Listings */}
+      <div className="md:w-3/4 p-5">
+        <h1 className="text-3xl font-bold text-white mb-6">Listing Results</h1>
+        {loading ? (
+          <p className="text-center text-lg text-gray-700">Loading...</p>
+        ) : listings.length === 0 ? (
+          <p className="text-center text-xl text-red-600">No Items Found</p>
+        ) : (
+          <div className="grid grid-cols-1 grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-8">
+            {listings.map((listing) => (
+              <div
+                key={listing._id}
+                className="transform hover:scale-105 transition-transform duration-300 max-w-[330px]"
+              >
+                <ListingItem listing={listing} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
