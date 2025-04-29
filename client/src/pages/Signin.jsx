@@ -1,24 +1,18 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {AiOutlineEye, AiOutlineEyeInvisible} from 'react-icons/ai'
-import { toast } from "react-hot-toast";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  signInFailure,
-  signInStart,
-  signInSuccess,
-} from "../redux/user/userSlice";
-import signInPhoto from '../assets/signInPhoto.jpg'
-import frame from '../assets/frame.png'
-import GoogleOAuth from "../components/GoogleOAuth";
 import { login } from "../services/operations/authAPI";
+import { toast } from "react-hot-toast";
+import GoogleOAuth from "../components/GoogleOAuth";
+import signInPhoto from "../assets/group1.png"; // updated to match the first code
+
 export default function Signin() {
   const [formData, setFormData] = useState({});
   const { loading } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [showPassword, setShowPassword]=useState(false);
-  // const [showConfirmPassword, setShowConfirmPassword]=useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -26,106 +20,115 @@ export default function Signin() {
       [e.target.id]: e.target.value,
     });
   };
+
   const handleSubmit = async (e) => {
-    e.preventDefault(); // prevent refreshing the page
-    dispatch(login(formData.email, formData.password, navigate))
-    // console.log(data)
+    e.preventDefault();
+    dispatch(login(formData.email, formData.password, navigate));
   };
-  console.log(formData);
+
   return (
-    <div className="flex flex-col w-11/12 max-w-[1160px] py-12 mx-auto gap-y-0 gap-x-12 justify-between text-richblack-100 md:flex-row" >
-     <div className="w-11/12 max-w-[450px] flex flex-col">
-     <h1 className="text-richblack-5 font-semibold text-[1.875rem] leading-[2.375rem]">
-        Welcome Back
-      </h1>
-      <p className="text-[1.125rem] mt-4 leading-[1.625rem]">
-          <span className="text-richblack-100">Lets Look for the</span>
-          <span className="text-blue-100 italic"> new in the old</span>
-        </p>
-     
-
-      <form action="" onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
-        <div className=" w-full relative">
-            <p className="text-[0.875rem] text-richblack-5 mb-1 leading-[1.375rem]">
-              Email Address
-              <sup className="text-pink-200">*</sup>
-            </p>
-            <input
-              required
-              type="email"
-              placeholder="email"
-              className='border-b bg-richblack-800 rounded-[.5rem] text-richblack-5 w-full p-[12px]'
-              id="email"
-              onChange={handleChange}
-            />
-        </div>
-         <div className=" w-full relative">
-               <p className="text-[0.875rem] text-richblack-5 mb-1 leading-[1.375rem]">
-                    Password
-                    <sup className="text-pink-200">*</sup>
-                </p>
-                <input
-                  required
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Password"
-                  className='border-b bg-richblack-800 rounded-[.5rem] text-richblack-5 w-full p-[12px]'
-                  id="password"
-                  onChange={handleChange}
-                  />
-                     <span
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-[38px] cursor-pointer "
-                >
-                    {showPassword ? (
-                        <AiOutlineEyeInvisible fontSize={24} fill="#AFB2BF" />
-                    ) : (
-                        <AiOutlineEye fontSize={24} fill="#AFB2BF" />
-                    )}
-                </span>
-
-         </div>
-      
-
-        <button
-          disabled={loading}
-          className="bg-yellow-50 py-[8px] px-[12px] rounded-[8px] mt-6 font-semibold text-richblack-900"
-        >
-          {loading ? "Loading ..." : "Sign In"}
-        
-        </button>
-
-        <div className="flex w-full items-center gap-x-2 my-4">
-          <div className="h-[1px] bg-richblack-700 w-full"></div>
-          <p className="uppercase text-richblack-700 font-medium leading-[1.375rem]">
-            or
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-richblack-900 px-4">
+      <div className="bg-white/10 backdrop-blur-md shadow-xl p-6 lg:p-10 flex flex-col lg:flex-row gap-8 max-w-5xl w-full rounded-xl">
+        {/* Left Section */}
+        <div className="w-full lg:w-1/2 p-6 md:p-10">
+          <h2 className="text-4xl font-bold text-center text-white mb-4">
+            Welcome Back
+          </h2>
+          <p className="text-center text-sm text-white mb-6">
+            Enter your credentials to access your account.
           </p>
-          <div className="h-[1px] bg-richblack-700 w-full"></div>
+
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            {/* Email */}
+            <div>
+              <label htmlFor="email" className="text-sm text-white mb-1 block">
+                Email Address <sup className="text-red-500">*</sup>
+              </label>
+              <input
+                type="email"
+                required
+                id="email"
+                placeholder="Enter your email"
+                onChange={handleChange}
+                className="border-b bg-richblack-800 rounded-md text-richblack-5 w-full p-3 placeholder:text-richblack-300 focus:ring-2 focus:ring-yellow-500"
+              />
+            </div>
+
+            {/* Password */}
+            <div className="relative">
+              <label htmlFor="password" className="text-sm text-white mb-1 block">
+                Password <sup className="text-red-500">*</sup>
+              </label>
+              <input
+                type={showPassword ? "text" : "password"}
+                required
+                id="password"
+                placeholder="Enter your password"
+                onChange={handleChange}
+                className="border-b bg-richblack-800 rounded-md text-richblack-5 w-full p-3 placeholder:text-richblack-300 focus:ring-2 focus:ring-yellow-500"
+              />
+              <span
+                className="absolute right-3 top-9 text-richblack-700 cursor-pointer"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? (
+                  <AiOutlineEyeInvisible size={20} />
+                ) : (
+                  <AiOutlineEye size={20} />
+                )}
+              </span>
+            </div>
+
+            {/* Forgot Password */}
+            <div className="text-right text-sm">
+              <Link to="/forgot-password" className="text-yellow-400 hover:underline">
+                Forgot Password?
+              </Link>
+            </div>
+
+            {/* Sign In Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-yellow-500 hover:bg-yellow-600 text-richblack-900 font-semibold py-2 rounded transition duration-200"
+            >
+              {loading ? "Signing In..." : "Login Now"}
+            </button>
+          </form>
+
+          {/* Sign Up Link */}
+          <p className="text-sm text-center mt-5 text-white">
+            Don’t have an account?{" "}
+            <Link
+              to="/sign-up"
+              className="text-pink-400 font-semibold hover:underline"
+            >
+              Sign Up Now
+            </Link>
+          </p>
+
+          {/* Divider */}
+          <div className="flex items-center my-6">
+            <div className="flex-grow border-t border-white/30"></div>
+            <span className="mx-2 text-sm text-white">or</span>
+            <div className="flex-grow border-t border-white/30"></div>
+          </div>
+
+          {/* Google OAuth */}
+          <div className="flex justify-center">
+            <GoogleOAuth />
+          </div>
         </div>
-        
-          <GoogleOAuth />
-     
-      </form>
 
-      <div className="flex gap-2 mt-3">
-        <p className="text-richblack-5">Dont have account</p>
-        <Link to={"/sign-up"}>
-          <span className="text-blue-100 italic   hover:opacity-80"> Sign Up</span>
-        </Link>
+        {/* Right Section (Image) */}
+        <div className="hidden lg:flex w-1/2 items-center justify-center">
+          <img
+            src={signInPhoto}
+            alt="Sign In Visual"
+            className="rounded-xl shadow-lg object-cover w-full h-full"
+          />
+        </div>
       </div>
-
-     </div>
-     <div className="relative w-11/12 max-w-[450px] hidden md:block">
-     <img src={frame} alt="patter" width={558} height={504} loading="lazy" />
-     <img
-          src={signInPhoto}
-          alt="patter"
-          width={458}
-          height={34}
-          loading="lazy"
-          className="absolute -top-4 right-4 "
-        />
-     </div>
-     
     </div>
   );
 }
