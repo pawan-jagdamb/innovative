@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { IoSearch } from "react-icons/io5";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
-  const location = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSubmit = (e) => {
@@ -18,7 +17,7 @@ export default function Header() {
   };
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
+    const urlParams = new URLSearchParams(window.location.search);
     const searchTermFromUrl = urlParams.get('searchTerm');
     if (searchTermFromUrl) {
       setSearchTerm(searchTermFromUrl);
@@ -26,52 +25,58 @@ export default function Header() {
   }, [location.search]);
 
   return (
-    <header className="text-xl bg-richblack-800 shadow-md">
-      <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
-        <h1 className="font-bold text-sm sm:text-xl flex flex-wrap">
-          <Link to="/">
-            <span className="text-richblack-25">Colligiate </span>
-            <span className="text-richblack-100">Mart</span>
-          </Link>
-        </h1>
+    <header className="bg-richblack-800 shadow-lg w-full">
+      <div className="max-w-7xl mx-auto flex justify-between items-center py-4 px-6">
 
-        <form onSubmit={handleSubmit} className="bg-slate-100 rounded-lg p-3 flex items-center">
+        {/* Logo */}
+        <Link to="/" className="flex items-center text-2xl sm:text-3xl font-bold text-richblack-25">
+          Collegiate
+          <span className="ml-1 text-richblack-25">Mart</span>
+        </Link>
+
+        {/* Search Bar */}
+        <form onSubmit={handleSubmit} className="bg-slate-100 rounded-full p-2 px-4 flex items-center w-40 sm:w-64">
           <input
             type="text"
             placeholder="Search Products..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="bg-transparent outline-none w-24 sm:w-64"
+            className="bg-transparent outline-none w-full text-sm sm:text-base text-black"
           />
           <button type="submit">
-            <IoSearch className="text-slate-600" />
+            <IoSearch className="text-slate-600 ml-2 cursor-pointer hover:text-slate-800 transition duration-200" />
           </button>
         </form>
 
-        <ul className="flex gap-4 items-center">
-          <Link to="/">
-            <li className="hidden sm:inline text-richblack-100 hover:underline">
-              Home
-            </li>
-          </Link>
-          <Link to="/about">
-            <li className="hidden sm:inline text-richblack-100 hover:underline">
-              About
-            </li>
-          </Link>
-          <Link to="/profile">
-            {currentUser ? (
-              <img
-                className="rounded-full h-7 w-7 object-cover"
-                src={currentUser.avatar}
-                alt="Profile"
-              />
-            ) : (
-              <li className="text-richblack-100 hover:underline">Sign in</li>
-            )}
-          </Link>
+        {/* Navigation and Profile */}
+        <ul className="flex items-center gap-4 sm:gap-6 text-sm sm:text-base font-semibold text-richblack-100">
+          <li className="hidden sm:inline hover:text-white transition duration-200">
+            <Link to="/" className="hover:underline">Home</Link>
+          </li>
+          <li className="hidden sm:inline hover:text-white transition duration-200">
+            <Link to="/about" className="hover:underline">About</Link>
+          </li>
+          <li>
+            <Link to={currentUser ? "/profile" : "/sign-in"} className="flex items-center">
+              {currentUser ? (
+                <img
+                  className="rounded-full h-10 w-10 object-cover border-2 border-blue-400 hover:scale-105 transition duration-300"
+                  src={currentUser.avatar}
+                  alt="Profile"
+                />
+              ) : (
+                <button className="text-white bg-blue-600 hover:bg-blue-700 px-4 py-1 rounded-full text-sm transition duration-300">
+                  Sign In
+                </button>
+              )}
+            </Link>
+          </li>
         </ul>
       </div>
+
+      {/* Decorative Border */}
+      <div className="bg-richblack-900 h-1 w-full"></div>
     </header>
   );
 }
+
