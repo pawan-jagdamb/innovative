@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import {
   getDownloadURL,
   getStorage,
@@ -13,16 +12,12 @@ import { endpoints } from "../services/apis";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-
 const { CREATE_LISTING } = endpoints;
 
-
-export default function CreateListing(props) {
-  const navigate= useNavigate();
-  const {currentUser}= useSelector(state=>state.user)
+export default function CreateListing() {
+  const navigate = useNavigate();
+  const { currentUser } = useSelector((state) => state.user);
   const [files, setFiles] = useState([]);
-
-  console.log("Current user",currentUser);
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: "",
@@ -32,186 +27,203 @@ export default function CreateListing(props) {
     discountPrice: 0,
     offer: false,
     furnished: false,
+    category: "",
+    paymentMethods: [],
+    availability: "In Stock",
+    tags: [],
+    isExclusive: false,
+    sellerRating: 0,
   });
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploadingProgress, setUploadingProgress] = useState(false);
-
   const [err, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  // console.log("files",files);
 
-  console.log("Form Data", formData);
-  function isFileTypeSupported(type) {
+  const isFileTypeSupported = (type) => {
     const supportedType = ["jpeg", "jpg", "png"];
-
     return supportedType.includes(type);
-  }
+  };
 
   const handleImageUpload = (e) => {
-    // e.preventDefault();
-    if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
+    if (files.length > 0 && files.length + formData.imageUrls.length <= 6) {
       setUploadingProgress(true);
       setImageUploadError(false);
-      // const toastId=toast.loading("Uploading")
-      const promises = []; // we need to wait for all of them to upload
+      const toastId = toast.loading("Uploading...");
+      const promises = [];
 
       for (let i = 0; i < files.length; i++) {
-        const fileType = files[i].name.split(".")[1].toLowerCase();
-        console.log("each file is", files[i]);
+        const fileType = files[i].name.split(".").pop().toLowerCase();
         if (isFileTypeSupported(fileType)) {
-          // console.log(reached);
-          // if(files[i].size >2*1024){}
-          if (files[i].size / 1000 > 2 * 1024) {
+          if (files[i].size / 1024 > 2048) {
             setUploadingProgress(false);
-            // toast.dismiss(toastId)
-            setImageUploadError("Image  size should be less than 2mb max(2mb)");
-            toast.error("Image  size should be less than 2mb");
+            toast.dismiss(toastId);
+            setImageUploadError("Image size should be less than 2MB");
+            toast.error("Image size should be less than 2MB");
             return;
           }
           promises.push(storeImage(files[i]));
         } else {
           setUploadingProgress(false);
-          setImageUploadError("File Type Not Supported");
           toast.dismiss(toastId);
-          toast.error("Invalid file name or File Type Not Supported");
+          setImageUploadError("File Type Not Supported");
+          toast.error("Invalid file name or file type not supported");
           return;
         }
-        // toast.dismiss(toastId)
       }
+
       Promise.all(promises)
         .then((urls) => {
-          setFormData({
-            ...formData,
-            imageUrls: formData.imageUrls.concat(urls),
-          });
-          setImageUploadError(false);
+          setFormData((prev) => ({
+            ...prev,
+            imageUrls: prev.imageUrls.concat(urls),
+          }));
           setUploadingProgress(false);
+          toast.dismiss(toastId);
+          toast.success("Images uploaded successfully");
         })
-        .catch((error) => {
-          setImageUploadError("Image  size should be max(2mb)");
-          toast.error("Image  size should be max(2mb)");
-          // setUploadingProgress(false);
+        .catch(() => {
+          setUploadingProgress(false);
+          toast.dismiss(toastId);
+          toast.error("Error uploading images");
         });
-    } else if (files.length == 0) {
-      setImageUploadError("Choose atleast 1 image");
-      toast.error("Choose atleast 1 image");
-      setUploadingProgress(false);
+    } else if (files.length === 0) {
+      setImageUploadError("Choose at least 1 image");
+      toast.error("Choose at least 1 image");
     } else {
-      setImageUploadError("You can only upload 6 images");
+      setImageUploadError("You can only upload 6 images max");
       toast.error("You can only upload 6 images");
-      setUploadingProgress(false);
     }
   };
 
   const storeImage = async (file) => {
     return new Promise((resolve, reject) => {
       const storage = getStorage(app);
-      const fileName = new Date().getTime() + file.name;
-      const storageRef = ref(storage, `ListningImage/${fileName}`);
-
+      const fileName = `${new Date().getTime()}-${file.name}`;
+      const storageRef = ref(storage, `ListingImages/${fileName}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
+
       uploadTask.on(
         "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("upload task is", progress);
-        },
-        (error) => {
-          reject(error);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            resolve(downloadURL);
-          });
-        }
+        null,
+        (error) => reject(error),
+        () =>
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
+            resolve(downloadURL)
+          )
       );
     });
   };
 
   const handleRemoveImage = (index) => {
-    setFormData({
-      ...formData,
-      imageUrls: formData.imageUrls.filter((_, i) => i !== index),
-    });
+    setFormData((prev) => ({
+      ...prev,
+      imageUrls: prev.imageUrls.filter((_, i) => i !== index),
+    }));
   };
 
   const handleFormChange = (e) => {
-    if (e.target.id == "furnished" || e.target.id == "offer") {
-      setFormData({
-        ...formData,
-        [e.target.id]: e.target.checked,
-      });
-    }
-    if (
-      e.target.type === "number" ||
-      e.target.type == "text" ||
-      e.target.type == "textarea"
-    ) {
-      setFormData({
-        ...formData,
-        [e.target.id]: e.target.value,
-      });
-    }
+    const { id, type, value, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleCategoryChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      category: e.target.value,
+    }));
+  };
+
+  const handlePaymentMethodsChange = (e) => {
+    const { value, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      paymentMethods: checked
+        ? [...prev.paymentMethods, value]
+        : prev.paymentMethods.filter((method) => method !== value),
+    }));
+  };
+
+  const handleTagsChange = (e) => {
+    const { value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      tags: value.split(",").map((tag) => tag.trim()),
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("first")
-    const toastId= toast.loading("Creating Listing")
-    console.log("sedond")
+    const toastId = toast.loading("Creating Listing...");
 
+    // Validation
+    if (!formData.name || !formData.description || !formData.address || !formData.category) {
+      toast.dismiss(toastId);
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    if (formData.imageUrls.length < 1) {
+      toast.dismiss(toastId);
+      toast.error("Upload at least one image");
+      return;
+    }
+
+    if (formData.offer && +formData.discountPrice >= +formData.regularPrice) {
+      toast.dismiss(toastId);
+      toast.error("Discount price should be less than regular price");
+      return;
+    }
+
+    setLoading(true);
     try {
-      if(formData.imageUrls.length<1){
-        toast.error("Image not Uploaded");
-        return
-      }
-      if(formData.offer && formData.discountPrice>formData.regularPrice){
-        toast.error("Discount price should be less then regular price");
+      const newFormData = {
+        ...formData,
+        userRef: currentUser._id,
+      };
+
+      const response = await apiConnector("POST", CREATE_LISTING, newFormData, {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${currentUser.token}`,
+      });
+
+      toast.dismiss(toastId);
+
+      if (!response.data.success) {
+        setError(response.data.message);
         return;
       }
-console.log("threee")
-      setLoading(true);
-      setError(false);
-      const newFormData={
-        ...formData,userRef:`${currentUser._id}`  
-      }
-      console.log("New form Data",newFormData)
-     
-      const response = await apiConnector(
-        "POST",
-        CREATE_LISTING,
-        newFormData,   {
-          "Content-Type": "application/json",
-          Authorization:`Bearer ${currentUser.token}`
-         
-        }
-     
-      );
-      toast.dismiss(toastId);
-      console.log("four")
-      console.log(" response after submint listing data",response.data)
 
-      // const data= await response.json();
-      // console.log("Data  after submmit in creating listing",data);
-      setLoading(false);
-      if(!response.data.success){
-        setError(response.data.message)
-        return
-      }
-      const data= response.data;
-      console.log("Data in create listing ",data);
-      navigate(`/listing/${data.listing._id}`)
+      toast.success("Listing created successfully!");
+      setFormData({
+        imageUrls: [],
+        name: "",
+        description: "",
+        address: "",
+        regularPrice: 0,
+        discountPrice: 0,
+        offer: false,
+        furnished: false,
+        category: "",
+        paymentMethods: [],
+        availability: "In Stock",
+        tags: [],
+        isExclusive: false,
+        sellerRating: 0,
+      });
+      navigate(`/listing/${response.data.listing._id}`);
     } catch (error) {
       toast.dismiss(toastId);
+      toast.error("Something went wrong");
       setError(error.message);
-      toast.error(error);
+    } finally {
       setLoading(false);
-      console.log("Error in submitting data", error);
     }
   };
 
-  return(
+  return (
     <main className="p-6 md:p-10 max-w-6xl mx-auto bg-gradient-to-r from-blue-700 to-blue-800 rounded-1xl">
       <h1 className="text-5xl font-bold text-center text-white mb-12">
         Create New Listing
@@ -374,4 +386,3 @@ console.log("threee")
     </main>
   );
 }
- 
