@@ -71,23 +71,19 @@ console.log("first")
   
   return (
     <main className='text-white'>
-    {/* <p>Hellow</p> */}
+    <p></p>
       {listing&&!loading&&(
         
         <div>
-        <p className='text-white'>Hellow</p>
-        <div className=" flex items-center justify-center">
-
-          
-             <Swiper navigation 
+        <p className='text-white'></p>
+        
+          <Swiper navigation 
            
           >
           {listing.imageUrls.map((url)=>(
             <SwiperSlide key={url}>
           
-            <div className='h-[350px] w-[850px]   bg-cover bg-center bg-no-repeat' style={{backgroundImage:`url('${url}')`,backgroundSize:'cover'}}>
-
-
+            <div className='h-[550px]  bg-cover bg-center bg-no-repeat' style={{backgroundImage:`url('${url}')`,backgroundSize:'cover'}}>
             </div>
            
             </SwiperSlide>
@@ -96,10 +92,6 @@ console.log("first")
           ))}
 
           </Swiper>
-        </div>
-      
-
-
           <div className='fixed top-[13%] right-[3%] z-10 border rounded-full w-12 h-12 flex justify-center items-center bg-slate-100 cursor-pointer'>
             <FaShare
               className='text-slate-500'
@@ -159,7 +151,7 @@ console.log("first")
                 onClick={() => setContact(true)}
                 className='bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 p-3'
               >
-                Contact Seller
+                Contact landlord
               </button>
             )}
             {contact && <Contact listing={listing} />}
