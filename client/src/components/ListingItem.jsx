@@ -1,3 +1,4 @@
+
 import React from 'react'
 import { Link } from 'react-router-dom'
 import {MdLocationOn} from 'react-icons/md'
@@ -7,12 +8,14 @@ export const ListingItem = ({listing}) => {
     <div className='bg-richblack-800 shadow-md hover:shadow-lg transition-shadow
     w-full h-[450px] sm:w-[330px] overflow-hidden rounded-lg flex:col'>
     <Link to={`/listing/${listing._id}`}>
-      <img
-      className=' h-[320px] sm:h-[220px] w-full object-cover
-      hover:scale-105 transition-scale duration-300'
-      alt='cover image'
-        src={listing.imageUrls[0]}
-      />
+    <img
+  className="w-full max-h-[250px] object-contain transition-transform duration-300 hover:scale-150"
+  alt="cover image"
+  src={listing.imageUrls[0]}
+/>
+
+
+
       <div className='p-3 flex flex-col gap-2 w-full'>
         <p className='text-richblack-100 font-semibold  text-lg truncate'>{listing.name}</p>
         <div className='flex items-center gap -1'>
@@ -37,10 +40,7 @@ export const ListingItem = ({listing}) => {
           listing.regularPrice.toLocaleString('en-US')
          }
          </p>
-        
-        
-        
-      
+         
       </div>
    
 

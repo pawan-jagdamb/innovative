@@ -1,5 +1,5 @@
 import React from 'react'
-import {getAuth, GoogleAuthProvider, signInWithPopup} from "@firebase/auth"
+import {getAuth, GoogleAuthProvider, signInWithPopup} from "firebase/auth"
 import {app} from "../GoogleFirebase"
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';

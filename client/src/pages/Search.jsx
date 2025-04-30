@@ -225,7 +225,7 @@ export const Search = () => {
 
           <button
             type="submit"
-            className="bg-blue-700 hover:bg-blue-600 p-3 text-white font-semibold rounded-lg uppercase transition-all duration-200"
+            className="bg-blue-600 hover:bg-blue-700 p-3 text-white font-semibold rounded-lg uppercase transition-all duration-200"
           >
             Search
           </button>
@@ -240,11 +240,11 @@ export const Search = () => {
         ) : listings.length === 0 ? (
           <p className="text-center text-xl text-red-600">No Items Found</p>
         ) : (
-          <div className="grid grid-cols-1 grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8">
             {listings.map((listing) => (
               <div
                 key={listing._id}
-                className="transform hover:scale-105 transition-transform duration-300 max-w-[330px]"
+                className="transform hover:scale-105  transition-transform duration-300 max-w-[330px]"
               >
                 <ListingItem listing={listing} />
               </div>
