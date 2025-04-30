@@ -25,6 +25,7 @@
     "nodemailer": "^6.9.16",
     "nodemon": "^3.1.7",
     "otp-generator": "^4.0.1",
+    "socket.io": "^4.8.1",
     "tailwindcss": "^3.4.17"
   }
 }

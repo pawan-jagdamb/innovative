@@ -4,9 +4,11 @@ import 'dotenv/config'
 
 export const verifyToken =(req, res, next)=>{
     // console.log("first",req.params.id)
-    const token= req.cookies.token || req.body.token ||  req.header("Authorization").replace("Bearer ","");
+    // console.log("1verify token",localStorage.getItem("token"))
+    const token= req.cookies.token || req.body.token|| localStorage.getItem('token')||  req.header("Authorization").replace("Bearer ","") ;
     // console.log("verify token",req)
-    console.log("token",token)
+    // console.log("token",token)
+    console.log("2 verify token")
 
     if(!token){
         return next(errorHandler(401,'Unauthorized'));
