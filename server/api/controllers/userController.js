@@ -9,6 +9,7 @@ export const test=(req,res)=>{
 
 export const updateUserInfo= async(req, res, next)=>{
     const saltRounds=10;
+    console.log("1")
     if(req.user.id != req.params.id){
         return next(errorHandler(401,"You can only update own account"));
     }
@@ -20,6 +21,7 @@ export const updateUserInfo= async(req, res, next)=>{
                 message:"User Name Already exist"
             })
         }
+        console.log("2")
         if(!req.body.userName &&!req.body.password && !req.body.avatar){
             return res.status(400).json({
                 success:false,

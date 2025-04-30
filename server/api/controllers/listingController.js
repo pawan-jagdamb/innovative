@@ -92,28 +92,48 @@ export const getListing= async(req,res,next)=>{
 export const getAllListings= async(req,res,next)=>{
 
     try {
-        const limit= parseInt(req.query.limit)||9;
-        const startIndex= parseInt(req.query.startIndex)||0;
-        let offer= req.query.offer;
-        if(offer===undefined || offer ==='false'){
-            offer={$in:[false,true]}
-        }
+        const limit = parseInt(req.query.limit) || 9;
+        const startIndex = parseInt(req.query.startIndex) || 0;
+        const searchTerm = req.query.searchTerm || '';
+        const sort = req.query.sort || 'createdAt';
+        const order = req.query.order === 'asc' ? 1 : -1;
         
-        let type= req.query.type;
-        // if(type===undefined || type=='all'){
-        //     type={$in:['sale']}
-        // }
+        const query = {
+            name: { $regex: searchTerm, $options: 'i' },
+          };
         
-        const searchTerm= req.query.searchTerm ||'';
-        const sort = req.query.sort ||'createdAt'
-        const order = req.query.order ||'desc'
-        const listings= await Listing.find({
-            name: {$regex:searchTerm,$options:'i'},
-            offer, 
-            // type
-        }).sort(
-            {[sort]:order}
-        ).limit(limit).skip(startIndex);
+          // --- Offer Filter ---
+          if (req.query.offer === 'true') {
+            query.offer = true;
+          } else if (req.query.offer === 'false') {
+            query.offer = false;
+          }
+        
+          // --- Furnished Filter ---
+          if (req.query.furnished === 'true') {
+            query.furnished = true;
+          } else if (req.query.furnished === 'false') {
+            query.furnished = false;
+          }
+        
+          // --- Address Filter (location) ---
+          if (req.query.location && req.query.location.trim() !== '') {
+            query.address = { $regex: req.query.location, $options: 'i' };
+          }
+        
+          // --- Price Filter (regularPrice) ---
+          const minPrice = parseFloat(req.query.minPrice);
+          const maxPrice = parseFloat(req.query.maxPrice);
+          if (!isNaN(minPrice) || !isNaN(maxPrice)) {
+            query.regularPrice = {};
+            if (!isNaN(minPrice)) query.regularPrice.$gte = minPrice;
+            if (!isNaN(maxPrice)) query.regularPrice.$lte = maxPrice;
+          }
+        
+          const listings = await Listing.find(query)
+            .sort({ [sort]: order })
+            .limit(limit)
+            .skip(startIndex);
 
 
         return res.status(200).json({

@@ -82,6 +82,7 @@ export default function Profile() {
       });
 
       const data = await res.json();
+      console.log("data in update user",data)
       if (!data.success) {
         dispatch(updateUserFailure(data.message));
         toast.error(data.message);
@@ -141,7 +142,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="max-w-[700px] mx-auto px-4 py-4 bg-blue-25 rounded-none shadow-sm mt-10 text-md">
+    <div className="max-w-[700px] min-h-screen mx-auto px-4 py-4 bg-blue-25 rounded-md shadow-sm mt-10 text-md">
       <h1 className="text-xl font-semibold text-center text-gray-800 mb-3">Profile</h1>
 
       <form onSubmit={handleSubmit} className="space-y-3">

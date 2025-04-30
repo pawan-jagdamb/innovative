@@ -137,7 +137,7 @@ export const Search = () => {
           </div>
 
           {/* Category Filter */}
-          <div>
+          {/* <div>
             <label htmlFor="category" className="block font-semibold text-blue-900 mb-2">
               Category
             </label>
@@ -155,7 +155,7 @@ export const Search = () => {
               <option value="stationary">Stationary</option>
               <option value="others">Others</option>
             </select>
-          </div>
+          </div> */}
 
           {/* Location Filter */}
           <div>
