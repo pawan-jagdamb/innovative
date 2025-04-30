@@ -71,11 +71,11 @@ console.log("first")
   
   return (
     <div className='flex justify-center'>
-      <main className='backdrop-blur-md shadow-xl min-h-screen  max-w-[440px]  bg-gradient-to-r from-blue-500 to-richblack-900 px-4 '>
+      <main className='backdrop-blur-md shadow-xl min-h-screen  max-w-[940px] min-w-[250px]  bg-gradient-to-r from-blue-500 to-richblack-500 px-4 '>
     <div >
     {listing&&!loading&&(
         
-        <div>
+        <div className=''>
         <p className='text-white'></p>
         
           <Swiper navigation 
@@ -84,7 +84,7 @@ console.log("first")
           {listing.imageUrls.map((url)=>(
             <SwiperSlide key={url}>
           
-            <div className='h-[550px]  bg-cover bg-center bg-no-repeat' style={{backgroundImage:`url('${url}')`,backgroundSize:'cover'}}>
+            <div className='h-[450px] max-w-[440px] item-center flex ml-10 mt-5 bg-cover bg-center bg-no-repeat' style={{backgroundImage:`url('${url}')`}}>
             </div>
            
             </SwiperSlide>
@@ -141,10 +141,7 @@ console.log("first")
               {listing.description}
             </p>
             <ul className='text-green-900 font-semibold text-sm flex flex-wrap items-center gap-4 sm:gap-6'>
-            <li className='flex items-center gap-1 whitespace-nowrap '>
-                <FaChair className='text-lg' />
-                {listing.furnished ? 'Furnished' : 'Unfurnished'}
-              </li>
+           
             </ul>
 
             {currentUser && listing.userRef!==currentUser._id&&  !contact && (

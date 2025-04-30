@@ -26,13 +26,7 @@ export default function CreateListing() {
     regularPrice: 0,
     discountPrice: 0,
     offer: false,
-    furnished: false,
-    category: "",
-    paymentMethods: [],
-    availability: "In Stock",
-    tags: [],
-    isExclusive: false,
-    sellerRating: 0,
+  
   });
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploadingProgress, setUploadingProgress] = useState(false);
@@ -127,6 +121,7 @@ export default function CreateListing() {
       ...prev,
       [id]: type === "checkbox" ? checked : value,
     }));
+    console.log("formData")
   };
 
   const handleCategoryChange = (e) => {
@@ -136,30 +131,15 @@ export default function CreateListing() {
     }));
   };
 
-  const handlePaymentMethodsChange = (e) => {
-    const { value, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      paymentMethods: checked
-        ? [...prev.paymentMethods, value]
-        : prev.paymentMethods.filter((method) => method !== value),
-    }));
-  };
 
-  const handleTagsChange = (e) => {
-    const { value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      tags: value.split(",").map((tag) => tag.trim()),
-    }));
-  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const toastId = toast.loading("Creating Listing...");
 
     // Validation
-    if (!formData.name || !formData.description || !formData.address || !formData.category) {
+    if (!formData.name || !formData.description || !formData.address ) {
       toast.dismiss(toastId);
       toast.error("Please fill in all required fields");
       return;
@@ -183,13 +163,16 @@ export default function CreateListing() {
         ...formData,
         userRef: currentUser._id,
       };
+      console.log("1")
 
       const response = await apiConnector("POST", CREATE_LISTING, newFormData, {
         "Content-Type": "application/json",
         Authorization: `Bearer ${currentUser.token}`,
       });
+      console.log("2")
 
       toast.dismiss(toastId);
+      console.log("response",response)
 
       if (!response.data.success) {
         setError(response.data.message);
@@ -341,7 +324,7 @@ export default function CreateListing() {
               <input
                 type="number"
                 id="discountPrice"
-                required
+                // required
                 min="0"
                 max='1000000'
                 onChange={handleFormChange}
