@@ -249,16 +249,16 @@ console.log("threee")
       <form
         onSubmit={handleSubmit}
         action=""
-        className="flex flex-col md:flex-row gap-8 bg-white shadow-lg p-10 rounded-1xl"
+        className="flex flex-col md:flex-row gap-8 bg-white shadow-lg p-10 rounded-1xl text-black"
       >
-         <div className="flex flex-col gap-6 flex-1 bg-gray-50 p-6 rounded-lg">
+         <div className="flex flex-col gap-6 flex-1  p-6 rounded-lg">
           <input
             type="text"
             placeholder="Name"
             id="name"
             value={formData.name}
             onChange={handleFormChange}
-            className="border p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="border bg-gray-100 p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             required
           />
           <textarea
@@ -266,7 +266,7 @@ console.log("threee")
             id="description"
             value={formData.description}
             onChange={handleFormChange}
-            className="border p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="border p-4 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             required
           />
           <input
@@ -275,7 +275,7 @@ console.log("threee")
             id="address"
             value={formData.address}
             onChange={handleFormChange}
-            className="border p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="border bg-gray-100 p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             required
           />
 
@@ -331,7 +331,7 @@ console.log("threee")
               <input
                 type="checkbox"
                 id="offer"
-                className="w-5"
+                className="w-5 bg-gray-100"
                 onChange={handleFormChange}
                 checked={formData.offer}
               />
@@ -346,7 +346,7 @@ console.log("threee")
                 min="0"
                 onChange={handleFormChange}
                 checked={formData.regularPrice}
-                className="p-3 border border-gray-300 rounded-lg text-black"
+                className="p-3 bg-gray-100 border border-gray-300 rounded-lg text-black"
               />
               <div className="flex flex-col items-center">
                 <p>Regular price </p>
@@ -363,7 +363,7 @@ console.log("threee")
                 max='1000000'
                 onChange={handleFormChange}
                 checked={formData.discountPrice}
-                className="p-3 border border-gray-300 rounded-lg text-black"
+                className="p-3 bg-gray-100  border border-gray-300 rounded-lg text-black"
               />
               <div className="flex flex-col items-center">
                 <p>Discount price</p>

@@ -3,11 +3,15 @@ import  userReducer  from './user/userSlice';
 import authReducer from './user/authSlice'
 import { persistReducer } from 'redux-persist';
 import { version } from 'mongoose';
+import messageReducer from "./user/messageSlice.js"
 import storage from 'redux-persist/lib/storage';
 import persistStore from 'redux-persist/es/persistStore';
+import socketReducer from "./user/socketSlice.js"
 
 const rootReducer= combineReducers({user:userReducer,
-  auth:authReducer
+  auth:authReducer,
+  message:messageReducer,
+  socket:socketReducer
 });
 
 const persistConfig={

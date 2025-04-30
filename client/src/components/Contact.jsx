@@ -33,6 +33,7 @@ const { currentUser } = useSelector((state) => state.user);
           toast.error("Unable to fetch detail of Seller")
         }
         console.log("responsee",response.data)
+        
         setSeller(response.data.rest);
         toast.success("Data fetched successfully")
       } catch (error) {

@@ -226,7 +226,7 @@ export default function Profile() {
     <div className="max-w-[700px] min-h-screen mx-auto px-4 py-4 bg-blue-25 rounded-md shadow-sm mt-10 text-md">
       <h1 className="text-xl font-semibold text-center text-gray-800 mb-3">Profile</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-3">
+      <form onSubmit={handleSubmit} className="space-y-3 text-black">
         <div className="flex justify-center">
           <input
             type="file"
@@ -260,7 +260,7 @@ export default function Profile() {
           onChange={handleChange}
           required
           placeholder="Username"
-          className="w-full rounded-lg bg-white-100 border border-richback-600 p-2 text-sm"
+          className="w-full rounded-lg bg-gray-100 border border-richback-600 p-2 text-sm"
         />
 
         <input

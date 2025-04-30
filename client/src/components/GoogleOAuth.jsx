@@ -1,11 +1,12 @@
 import React from 'react'
-import {getAuth, GoogleAuthProvider, signInWithPopup} from "firebase/auth"
+import {getAuth, GoogleAuthProvider, signInWithPopup} from "@firebase/auth"
 import {app} from "../GoogleFirebase"
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
-import { signInSuccess } from '../redux/user/userSlice';
+import { setAuthUser, signInSuccess } from '../redux/user/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { FcGoogle } from "react-icons/fc";
+import { setUser } from '../redux/user/profileSlice';
 export default function GoogleOAuth() {
 
     const dispatch= useDispatch();
@@ -29,8 +30,12 @@ export default function GoogleOAuth() {
                 body:JSON.stringify({name:result.user.displayName,email:result.user.email,photo:result.user.photoURL})
             });
             const data= await res.json();
-            dispatch(signInSuccess(data));
             console.log("data-> ",data);
+            dispatch(signInSuccess(data.user));
+           
+            // dispatch(response.data.token);
+            dispatch(setUser(data));
+            dispatch(setAuthUser(data))
             toast.success(data.message);
 
             console.log(result);

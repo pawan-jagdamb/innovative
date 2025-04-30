@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { apiConnector } from '../services/apiConnector';
 import { endpoints } from '../services/apis';
 import toast from 'react-hot-toast';
@@ -18,18 +18,25 @@ import {
 
 import 'swiper/css'
 import 'swiper/css/navigation'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Contact from '../components/Contact';
+import { setSelectedUser } from '../redux/user/userSlice';
+import useGetMessages from '../hooks/useGetMessages';
+import { setMessages } from '../redux/user/messageSlice';
 
-const {GET_A_LISTING}=endpoints
+const {GET_A_LISTING}=endpoints;
+const{GET_USER,BASE_URL}=endpoints;
+
 export const Listing = () => {
   SwiperCore.use([Navigation])
 const params= useParams();
+const dispatch= useDispatch();
 const [listing, setListing]=useState(null);
 const [loading,setLoading]= useState(false);
 const [copied, setCopied] = useState(false);
-const [contact, setContact] = useState(false);
-const { currentUser } = useSelector((state) => state.user);
+const [seller, setSeller] = useState(null);
+const { currentUser,selectedUser } = useSelector((state) => state.user);
+const navigate= useNavigate();
 
 
 console.log("first")
@@ -68,6 +75,57 @@ console.log("first")
   },[])
   console.log(listing)
   console.log(loading)
+  const handleSeller=async()=>{
+     try {
+            // console.log(listing.userRef)
+            console.log("contact", currentUser.token)
+            console.log("in contact page",listing.userRef)
+            // const res = await fetch(`server/api/user/${listing.userRef}`);
+            console.log(`${GET_USER}/${listing.userRef}`)
+            const response= await apiConnector('GET',`${GET_USER}/${listing.userRef}`,null,
+              {
+                  Authorization:`Bearer ${currentUser.token}`
+              }
+            )
+            // const data = await res.json();
+            if(!response.data.success){
+              toast.error("Unable to fetch detail of Seller")
+            }
+            console.log("responsee",response.data)
+            dispatch(setSelectedUser(response.data.rest))
+            console.log("selected User in listingh",selectedUser)
+            // useGetMessages();
+            // dispatch(setMessages(null))
+
+            // console.log("Get messages")
+            // console.log("1")
+            // console.log("Selected User:", selectedUser);
+
+            // if (!selectedUser?._id) return;
+            // console.log("selected UserId",selectedUser._id)
+            // console.log("2")
+            // // const GET_MESSAGE = `${BASE_URL}/v1/message/${selectedUser._id}`;
+            // const params = {
+            //     senderId: currentUser._id,
+            //     receiverId: selectedUser._id,
+            //   };
+            //   const GET_MESSAGE = `${BASE_URL}/v1/message/${selectedUser._id}`;
+
+            // const response1 = await apiConnector("GET", GET_MESSAGE,null,null,params);
+
+            // console.log("Fetched Messages:", response1);
+            // dispatch(setMessages(response1.data))
+            navigate('/chating')
+            
+          
+            // setSeller(response.data.rest);
+            toast.success("Data fetched successfully")
+          } catch (error) {
+            console.log(error);
+          }
+    
+
+  }
   
   return (
     <div className='flex justify-center'>
@@ -111,7 +169,7 @@ console.log("first")
             </p>
           )}
 
-          <div className='flex flex-col max-w-4xl mx-auto p-3 my-7 gap-4'>
+          <div className='flex flex-col items-center text-center max-w-4xl mx-auto p-3 my-7 mt-10 gap-4'>
           <p className='text-2xl font-semibold'>
               {listing.name} - Rs{' '}
               {listing.offer
@@ -144,15 +202,15 @@ console.log("first")
            
             </ul>
 
-            {currentUser && listing.userRef!==currentUser._id&&  !contact && (
+            {currentUser && listing.userRef!==currentUser._id&&   (
               <button
-                onClick={() => setContact(true)}
+                onClick={handleSeller}
                 className='bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 p-3'
               >
                 Contact Seller
               </button>
             )}
-            {contact && <Contact listing={listing} />}
+            {/* {contact && <Contact listing={listing} />} */}
 
           </div>
 

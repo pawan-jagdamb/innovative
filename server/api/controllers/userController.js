@@ -130,7 +130,7 @@ export const getUserListings= async(req,res)=>{
     }
 }
 
-export const getUser= async(req,res)=>{
+export const getUser= async(req,res,next)=>{
     try {
         console.log("get user")
         const user= await User.findById(req.params.id);

@@ -104,6 +104,7 @@ export default {
     },
   },
   plugins: [
-    require('@tailwindcss/line-clamp')
+    require('@tailwindcss/line-clamp'),
+    require('daisyui')
   ],
 };

@@ -16,7 +16,7 @@ export const ListingItem = ({listing}) => {
 
 
 
-      <div className='p-3 flex flex-col gap-2 w-full'>
+      <div className='p-3 flex flex-col items-center text-center gap-2 w-full'>
         <p className='text-richblack-100 font-semibold  text-lg truncate'>{listing.name}</p>
         <div className='flex items-center gap -1'>
           <MdLocationOn className='h-4 w-4 gext-green-700'/>

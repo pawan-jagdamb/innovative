@@ -2,6 +2,7 @@ const BASE_URL= "http://localhost:5000/api"
   
 
 export const endpoints = {
+  BASE_URL,
     SENDOTP_API: BASE_URL + "/auth/sendotp",
     SIGNUP_API: BASE_URL + "/auth/signup",
     LOGIN_API: BASE_URL + "/auth/signin",

@@ -89,7 +89,7 @@ export const Search = () => {
     <div className="flex flex-col md:flex-row p-5 gap-5 bg-gradient-to-r from-blue-500 to-richblack-900 min-h-screen">
       {/* Sidebar */}
       <div className="md:w-1/4 p-5 bg-white shadow-xl rounded-1xl sticky top-20 h-fit">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6 text-black">
           {/* Search Input */}
           <div>
             <label htmlFor="searchTerm" className="block font-semibold text-blue-900 mb-2">
@@ -101,12 +101,12 @@ export const Search = () => {
               value={sidebarData.searchTerm}
               onChange={handleChange}
               placeholder="Item name..."
-              className="border p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-300"
+              className="border bg-gray-100 p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-300"
             />
           </div>
 
           {/* Type Filter */}
-          <div>
+          {/* <div>
             <label htmlFor="type" className="block font-semibold text-blue-900 mb-2">
               Type
             </label>
@@ -114,13 +114,13 @@ export const Search = () => {
               id="type"
               value={sidebarData.type}
               onChange={handleChange}
-              className="border p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-300"
+              className="border bg-gray-100 p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-300"
             >
               <option value="all">All</option>
               <option value="sale">Sale</option>
               <option value="rent">Rent</option>
             </select>
-          </div>
+          </div> */}
 
           {/* Offer Checkbox */}
           <div className="flex items-center gap-2">
@@ -129,7 +129,7 @@ export const Search = () => {
               id="offer"
               checked={sidebarData.offer}
               onChange={handleChange}
-              className="w-5 h-5"
+              className="w-5 h-5 bg-gray-100"
             />
             <label htmlFor="offer" className="text-blue-800">
               Offer Only
@@ -168,7 +168,7 @@ export const Search = () => {
               value={sidebarData.location}
               onChange={handleChange}
               placeholder="Campus / Hostel..."
-              className="border p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-300"
+              className="border p-3 bg-gray-100 w-full rounded-lg focus:ring-2 focus:ring-blue-300"
             />
           </div>
 
@@ -184,7 +184,7 @@ export const Search = () => {
                 value={sidebarData.minPrice}
                 onChange={handleChange}
                 placeholder="₹ Min"
-                className="border p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-300"
+                className="border bg-gray-100 p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-300"
               />
             </div>
             <div className="flex-1">
@@ -197,7 +197,7 @@ export const Search = () => {
                 value={sidebarData.maxPrice}
                 onChange={handleChange}
                 placeholder="₹ Max"
-                className="border p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-300"
+                className="border bg-gray-100 p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-300"
               />
             </div>
           </div>
@@ -214,7 +214,7 @@ export const Search = () => {
                 setSidebarData((prev) => ({ ...prev, sort, order }));
               }}
               defaultValue="createdAt_desc"
-              className="border p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-300"
+              className="border bg-gray-100 p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-300"
             >
               <option value="createdAt_desc">Newest First</option>
               <option value="createdAt_asc">Oldest First</option>

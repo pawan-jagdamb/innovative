@@ -5,8 +5,10 @@ import { setLoading, setToken } from "../../redux/user/authSlice"
 import { setUser } from "../../redux/user/profileSlice"
 import { apiConnector } from "../apiConnector"
 import { endpoints } from "../apis"
-import { signInSuccess } from "../../redux/user/userSlice"
+import axios from "axios"
+import { setAuthUser, setOtherUsers, signInSuccess } from "../../redux/user/userSlice"
 import { signOutUserStart,signOutUserFailure,signOutUserSuccess } from "../../redux/user/userSlice"
+import useGetMessages from "../../hooks/useGetMessages"
 
 const {
   SENDOTP_API,
@@ -14,7 +16,8 @@ const {
   LOGIN_API,
   RESETPASSTOKEN_API,
   RESETPASSWORD_API,
-  LOGOUT_API
+  LOGOUT_API,
+  BASE_URL
 } = endpoints
 
 export function sendOtp(email, navigate) {
@@ -107,8 +110,12 @@ export function login(email, password, navigate) {
       if (!response.data.success) {
         throw new Error(response.data.message)
       }
+      const res= await axios.get(`${BASE_URL}/v1/user/`);
+      console.log("other user in login",res);
+      dispatch(setOtherUsers(res.data))
 
       toast.success("Login Successful")
+      useGetMessages();
       dispatch(setToken(response.data.token))
       console.log(response);
       dispatch(signInSuccess(response.data.user))
@@ -116,7 +123,9 @@ export function login(email, password, navigate) {
       
       localStorage.setItem("token", JSON.stringify(response.data.token))
       localStorage.setItem("user", JSON.stringify(response.data.user))
-      dispatch(setLoading(false))
+      dispatch(setLoading(false));
+      console.log(response.data)
+      dispatch(setAuthUser(response.data))
       toast.dismiss(toastId)
       navigate("/")
     } catch (error) { 
