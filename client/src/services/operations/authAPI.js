@@ -115,7 +115,7 @@ export function login(email, password, navigate) {
       dispatch(setOtherUsers(res.data))
 
       toast.success("Login Successful")
-      useGetMessages();
+      // useGetMessages();
       dispatch(setToken(response.data.token))
       console.log(response);
       dispatch(signInSuccess(response.data.user))
