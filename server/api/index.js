@@ -10,12 +10,13 @@ import cookieParser from "cookie-parser";
 import  connect  from "./config/database.js"; // Ensure you're importing correctly
 import  mailSender  from "./utils/mailSender.js";
 import cors from 'cors'
-
+import messageRoute from "./routes/messageRoute.js"
+import { app,server } from "./socket/socket.js";
 connect();
 const PORT= process.env.PORT;
 // database.connect();
 // mailSender("pawankumar9534078@gmail.com", "First mail", "aaHellow world");
-const app=express(); 
+// const app=express(); 
 
 const corsOptions = {
     origin:'http://localhost:5173',// Allow only this origin
@@ -29,9 +30,11 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app. use(cookieParser());
 console.log("first")
+
+app.use('/api/v1',messageRoute)
  
 app.use('/api/user',userRouter);   
-
+ 
 app.use('/api/auth',authRouter);  
 app.use('/api/listing',listingRoute);
 
@@ -48,7 +51,7 @@ app.use((error,req,res,next)=>{
     })
 
 });
-app.listen(PORT,()=>{   
+server.listen(PORT,()=>{   
 
 
     console.log('Server is running on port!!! ',PORT)

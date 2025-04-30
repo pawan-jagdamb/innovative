@@ -172,16 +172,17 @@ export const signin=async(req,res,next)=>{
         const payload={
             email:user.email,
         id:user._id,}
-        const token = jwt.sign(payload, process.env.JWT_SECRET,{
-            expiresIn:"2h"
+        const token =await jwt.sign(payload, process.env.JWT_SECRET,{
+            expiresIn:"1d"
         })
         user.token= token;
         user.password= undefined;
         const options={
-            expired: new Date (Date.now()+ 3*24*60*60*1000),
+            expires: new Date (Date.now()+ 3*24*60*60*1000),
             httpOnly:true,
         }
         res.cookie("token", token, options).status(200).json({
+            id:user._id,
             success:true,
             token,
             user,
