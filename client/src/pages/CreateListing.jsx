@@ -224,7 +224,7 @@ export default function CreateListing() {
             id="name"
             value={formData.name}
             onChange={handleFormChange}
-            className="border p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="border p-4 rounded-lg bg-white border-black border-solid focus:outline-none focus:ring-2 focus:ring-blue-600"
             required
           />
           <textarea
@@ -232,7 +232,7 @@ export default function CreateListing() {
             id="description"
             value={formData.description}
             onChange={handleFormChange}
-            className="border p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="border p-4 rounded-lg bg-white text-black border-black border-solid focus:outline-none focus:ring-2 focus:ring-blue-600"
             required
           />
           <input
@@ -241,7 +241,7 @@ export default function CreateListing() {
             id="address"
             value={formData.address}
             onChange={handleFormChange}
-            className="border p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="border p-4 rounded-lg bg-white text-black border-black border-solid focus:outline-none focus:ring-2 focus:ring-blue-600"
             required
           />
 
@@ -293,7 +293,7 @@ export default function CreateListing() {
           </div> */}
           <div className="flex gap-6 flex-wrap text-white">
           
-            <div className="flex gap-2 text-black">
+            <div className="flex gap-2  text-black">
               <input
                 type="checkbox"
                 id="offer"
@@ -312,7 +312,7 @@ export default function CreateListing() {
                 min="0"
                 onChange={handleFormChange}
                 checked={formData.regularPrice}
-                className="p-3 border border-gray-300 rounded-lg text-black"
+                className="p-3 border border-gray-300 border-black border-solid bg-white rounded-lg text-black"
               />
               <div className="flex flex-col items-center">
                 <p>Regular price </p>
@@ -345,7 +345,7 @@ export default function CreateListing() {
         </div>
 
         {/* Right Side (Image Upload) */}
-        <div className="flex flex-col gap-6 flex-1 bg-gray-50 p-6 rounded-lg">
+        <div className="flex flex-col gap-6 flex-1 bg-gray-50 border-black border-solid p-6 rounded-lg">
           <div>
             <label htmlFor="image" className="font-semibold text-gray-700">
               Upload Images

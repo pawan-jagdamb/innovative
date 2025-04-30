@@ -32,10 +32,10 @@ export default function Signin() {
         {/* Left Section */}
         <div className="w-full lg:w-1/2 p-6 md:p-10">
           <h2 className="text-4xl font-bold text-center text-white mb-4">
-            Welcome Back
+            Login
           </h2>
-          <p className="text-center text-sm text-white mb-6">
-            Enter your credentials to access your account.
+          <p className="text-center text-lg text-white mb-6">
+          Log in to access your accoun
           </p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
@@ -68,7 +68,7 @@ export default function Signin() {
                 className="border-b bg-richblack-800 rounded-md text-richblack-5 w-full p-3 placeholder:text-richblack-300 focus:ring-2 focus:ring-yellow-500"
               />
               <span
-                className="absolute right-3 top-9 text-richblack-700 cursor-pointer"
+                className="absolute right-3 top-9 text-richblack-100 cursor-pointer"
                 onClick={() => setShowPassword((prev) => !prev)}
               >
                 {showPassword ? (
@@ -81,7 +81,7 @@ export default function Signin() {
 
             {/* Forgot Password */}
             <div className="text-right text-sm">
-              <Link to="/forgot-password" className="text-yellow-400 hover:underline">
+              <Link to="/forgot-password" className="text-white-100 hover:underline">
                 Forgot Password?
               </Link>
             </div>
@@ -101,7 +101,7 @@ export default function Signin() {
             Don’t have an account?{" "}
             <Link
               to="/sign-up"
-              className="text-pink-400 font-semibold hover:underline"
+              className="text-red-500 font-semibold hover:underline"
             >
               Sign Up Now
             </Link>

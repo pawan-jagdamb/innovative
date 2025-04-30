@@ -223,8 +223,8 @@ export default function Profile() {
   };
 
   return (
-    <div className="max-w-[700px] min-h-screen mx-auto px-4 py-4 bg-blue-25 rounded-md shadow-sm mt-10 text-md">
-      <h1 className="text-xl font-semibold text-center text-gray-800 mb-3">Profile</h1>
+    <div className="max-w-[600px] min-h-screen mx-auto px-4 py-4 bg-blue-500 rounded-md shadow-sm mt-10 text-md">
+      <h1 className="text-xl font-semibold text-center text-gray-100 mb-3">Profile</h1>
 
       <form onSubmit={handleSubmit} className="space-y-3 text-black">
         <div className="flex justify-center">
@@ -281,7 +281,7 @@ export default function Profile() {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-1.5 rounded-sm text-sm font-medium"
+          className="w-full bg-yellow-300 hover:bg-blue-700 text-white py-1.5 rounded-sm text-sm font-medium"
         >
           Update Profile
         </button>
