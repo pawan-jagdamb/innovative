@@ -16,7 +16,12 @@ export const ListingItem = ({listing}) => {
 
 
 
+<<<<<<< HEAD
       <div className='p-3 flex flex-col items-center text-center gap-2 w-full'>
+=======
+<div className='p-3 flex flex-col items-center text-center gap-2 w-full'>
+
+>>>>>>> 65b392607fe76e44d4ddb7d688d8efbc563abec7
         <p className='text-richblack-100 font-semibold  text-lg truncate'>{listing.name}</p>
         <div className='flex items-center gap -1'>
           <MdLocationOn className='h-4 w-4 gext-green-700'/>
