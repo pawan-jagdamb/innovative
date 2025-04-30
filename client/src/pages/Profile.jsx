@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useRef } from "react";
 import { app } from "../GoogleFirebase";
 import {
   getDownloadURL,
@@ -15,11 +15,20 @@ import {
   deleteUserFailure,
   deleteUserStart,
   deleteUserSuccess,
+  signOutUserStart,
+  signInFailure,
+  signOutUserSuccess,
+  signOutUserFailure,
 } from "../redux/user/userSlice";
+import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 import { logout } from "../services/operations/authAPI";
+
+import { Navigate, useNavigate } from "react-router-dom";
 import { apiConnector } from "../services/apiConnector";
 import { endpoints } from "../services/apis";
+import { setUser } from "../redux/user/profileSlice";
 import { ShowListnings } from "../components/ShowListnings";
 
 const { SHOW_LISTING } = endpoints;
@@ -28,34 +37,51 @@ export default function Profile() {
   const fileRef = useRef(null);
   const { currentUser } = useSelector((state) => state.user);
   const [file, setFile] = useState(undefined);
+  // console.log(" console log in profile page",currentUser);
   const [fileUploadPer, setFileUploadPer] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
-  const [userListings, setUserListings] = useState([]);
-  const [showList, setShowList] = useState(false);
+  const [userListings,setUserListings]=useState([])
+  const [showList,setShowList]=useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (file) handleFileUpload(file);
-  }, [file]);
+  console.log("ccurrentUser", currentUser);
 
+  console.log(" file uploading percentate", fileUploadPer);
+  // console.log("file uploading image is",file);
+  console.log("Form data is a", formData);
+  // console.log("user image=>", currentUser.user.avatar);
+  useEffect(() => {
+    if (file) {
+      handleFileUpload(file);
+    }
+  }, [file]);
   const handleFileUpload = (file) => {
     const storage = getStorage(app);
-    const fileName = `${Date.now()}_${file.name}`;
+    const fileName = new Date().getTime() + file.name;
     const storageRef = ref(storage, `avatars/${fileName}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
+    console.log(uploadTask);
+    // console.log(" Url is ",uploadTask.snapshot.ref);
 
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setFileUploadPer(Math.round(progress));
+        // console.log( `upload is ${progress}  % done`);
       },
-      () => setFileUploadError(true),
+
+      (error) => {
+        setFileUploadError(true);
+      },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log("download url is ", downloadURL);
+          // console.log(" url is ",uploadTask.snapshot.ref);
           setFormData({ ...formData, avatar: downloadURL });
         });
       }
@@ -69,76 +95,131 @@ export default function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log("1")
       dispatch(updateUserStart());
       if (formData.password !== formData.confirmPassword) {
-        toast.error("Passwords do not match");
+        toast.error("Password not matched");
         return;
       }
-
+      console.log("2")
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:`Bearer ${currentUser.token}`
+        },
         body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      console.log("res",res)
+
+      // console.log("ccurrentUser",currentUser.user);
+      if (data.success === false) {
+        // dispatch(updateUserFailure(data.message));
+        toast.error(data.message);
+
+        return;
+      }
+      console.log("Data  is->", data);
+      console.log("current user is  after data", currentUser);
+      toast.success(data.message);
+
+      // dispatch(updateUserSuccess(data.data));
+      // Navigate('/home');
+    } catch (error) {
+      dispatch(updateUserFailure(error.message));
+    }
+  };
+  const handleDeleteUser = async () => {
+    try {
+      dispatch(deleteUserStart());
+
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
       });
 
       const data = await res.json();
-      console.log("data in update user",data)
-      if (!data.success) {
-        dispatch(updateUserFailure(data.message));
+      console.log("data in delete", data);
+
+      if (data.success === false) {
         toast.error(data.message);
+
+        //
+        dispatch(deleteUserFailure(data.message));
         return;
       }
 
-      dispatch(updateUserSuccess(data));
-      toast.success(data.message);
+      localStorage.removeItem("token");
+
+      localStorage.removeItem("persist:root"); // Just to ensure it's cleared
+
+      window.location.reload();
+
+      dispatch(deleteUserSuccess(data));
+      return;
     } catch (error) {
-      dispatch(updateUserFailure(error.message));
-      toast.error(error.message);
+      dispatch(deleteUserFailure(error.message));
     }
   };
-
-  const handleDeleteUser = async () => {
-    if (window.confirm("Are you sure you want to delete your account?")) {
-      try {
-        dispatch(deleteUserStart());
-        const res = await fetch(`/api/user/delete/${currentUser._id}`, {
-          method: "DELETE",
-        });
-        const data = await res.json();
-        if (!data.success) {
-          dispatch(deleteUserFailure(data.message));
-          toast.error(data.message);
-          return;
+  const handleSignOut = async () => {
+    dispatch(logout(navigate));
+  };
+  const handleShowListings = async (req, res) => {
+    const toastId = toast.loading("Fetching data");
+      setShowList(false);
+    try {
+      console.log(currentUser._id);
+      const response = await apiConnector(
+        "GET",
+        `${SHOW_LISTING}/${currentUser._id}`,
+        null,
+        {
+          Authorization: `Bearer ${currentUser.token}`,
         }
 
-        localStorage.clear();
-        window.location.reload();
-        dispatch(deleteUserSuccess(data));
-      } catch (error) {
-        dispatch(deleteUserFailure(error.message));
-        toast.error(error.message);
+      );
+      // const response= await fetch(`/api/user/listings/${currentUser._id}`)
+      console.log("response", response);
+
+      // const data= await response.json();
+      // console.log("data",data);
+      if (!response.data.success) {
+      
+        console.error("API Error:", errorData);
+        return;
       }
-    }
-  };
-
-  const handleSignOut = () => dispatch(logout(navigate));
-
-  const handleShowListings = async () => {
-    const toastId = toast.loading("Fetching your listings...");
-    setShowList(false);
-    try {
-      const response = await apiConnector("GET", `${SHOW_LISTING}/${currentUser._id}`, null, {
-        Authorization: `Bearer ${currentUser.token}`,
-      });
-
-      if (!response.data.success) throw new Error("Failed to fetch listings");
-
-      setUserListings(response.data.listings);
+      console.log("response.data..istings",response.data.listings)
+      setUserListings(response.data.listings)
       setShowList(true);
+        // console.log("userListing",userListings)
+
     } catch (error) {
-      toast.error(error.message || "Something went wrong!");
+      console.error(
+        "Error fetching listings:",
+         error.message
+      );
+      setShowList(false);
+      toast.error(error.response?.data?.message || "Something went wrong!");
     }
     toast.dismiss(toastId);
+    // try {
+    //   dispatch(signOutUserStart());
+    //   const res= await fetch('/api/auth/signout',{
+    //     method:'GET'
+    //   });
+    //   const data= await res.json();
+    //   if(data.success==false){
+    //     toast.error(data.message);
+    //     dispatch(signOutUserFailure(data.message));
+    //     return;
+    //   }
+    //   toast.success(data.message);
+    //   dispatch(signOutUserSuccess(data));
+
+    // } catch (error) {
+    //   dispatch(signOutUserFailure(error.message));
+
+    // }
   };
 
   return (

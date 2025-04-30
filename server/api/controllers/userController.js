@@ -1,6 +1,7 @@
 import express from 'express'
 import { errorHandler, successHandler } from '../utils/error.js';
 import User from '../model/useModel.js'
+import bcrypt from 'bcrypt'; 
 import Listing from '../model/listingModel.js';
 export const test=(req,res)=>{
     res.json({
@@ -10,7 +11,7 @@ export const test=(req,res)=>{
 export const updateUserInfo= async(req, res, next)=>{
     const saltRounds=10;
     console.log("1")
-    if(req.user.id != req.params.id){
+    if(req.user.id !== req.params.id){
         return next(errorHandler(401,"You can only update own account"));
     }
     try {
@@ -28,11 +29,13 @@ export const updateUserInfo= async(req, res, next)=>{
                 message:"Atleast one thing are mendatory"
             })
         }
+        console.log("3")
+        console.log("req.params.id",req.params.id)
         const user= await User.findById({_id:req.params.id});
 
-        
+         console.log("req.body",req.body)
         if(req.body.password){
-           user.password =  bcrypt.hashSync(req.body.password, saltRounds);
+           user.password = await bcrypt.hashSync(req.body.password, saltRounds);
 
         }
         if(req.body.userName){
@@ -41,6 +44,7 @@ export const updateUserInfo= async(req, res, next)=>{
         if(req.body.avatar){
             user.avatar=req.body.avatar;
         }
+        console.log("4")
 
         const updatedUser= await User.findByIdAndUpdate(req.params.id,{
             $set:{
@@ -50,7 +54,7 @@ export const updateUserInfo= async(req, res, next)=>{
                 avatar:user.avatar,
             }
         },{new:true});
-
+        console.log("5")
         // req.body.password= null;
         const {password, ...rest}= updatedUser._doc;
         console.log(rest);
@@ -63,6 +67,7 @@ export const updateUserInfo= async(req, res, next)=>{
        });
         
     } catch (error) {
+        console.log("error",error);
         return next(errorHandler(500,"Error in updating user"))
         
     }
