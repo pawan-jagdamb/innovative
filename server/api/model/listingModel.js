@@ -32,10 +32,7 @@ const listingSchema= new mongoose.Schema({
         type:Array,
         required:true,
     },
-    furnished: {
-        type: Boolean,
-        // required: true,
-      },
+  
     userRef:{
         type:String,
         required:true,

@@ -309,16 +309,7 @@ export default function CreateListing() {
             </div>
           </div> */}
           <div className="flex gap-6 flex-wrap text-white">
-            <div className="flex gap-2">
-              {/* <input
-                type="checkbox"
-                id="furnished"
-                className="w-5"
-                onChange={handleFormChange}
-                checked={formData.furnished}
-              />
-              <span>Furnished</span> */}
-            </div>
+          
             <div className="flex gap-2 text-black">
               <input
                 type="checkbox"

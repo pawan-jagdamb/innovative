@@ -12,10 +12,14 @@
     --richblack-900: #000814;
   }
    */
+   /* :root {
+    --primary-bg: linear-gradient(to right, #5e8cee, #000814); /* blue-500 to richblack-900 */
+  /* } */
+  
   body {
-    background-color: var(--richblack-900); /* Use any of your custom shades */
-  }
-
+    background: var(--primary-bg);
+    min-height: 100vh;
+  } */
   /* HTML: <div class="loader"></div> */
  
     .spinner {

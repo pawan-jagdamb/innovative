@@ -70,9 +70,10 @@ console.log("first")
   console.log(loading)
   
   return (
-    <main className='text-white'>
-    <p></p>
-      {listing&&!loading&&(
+    <div className='flex justify-center'>
+      <main className='backdrop-blur-md shadow-xl min-h-screen  max-w-[440px]  bg-gradient-to-r from-blue-500 to-richblack-900 px-4 '>
+    <div >
+    {listing&&!loading&&(
         
         <div>
         <p className='text-white'></p>
@@ -151,7 +152,7 @@ console.log("first")
                 onClick={() => setContact(true)}
                 className='bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 p-3'
               >
-                Contact landlord
+                Contact Seller
               </button>
             )}
             {contact && <Contact listing={listing} />}
@@ -168,6 +169,13 @@ console.log("first")
 
         
       )}
+
+    </div>
+    
+      
     </main>
+
+    </div>
+    
   )
 }
