@@ -217,14 +217,14 @@ export default function CreateListing() {
         className="flex flex-col md:flex-row gap-8 bg-white shadow-lg p-10 rounded-1xl"
       >
         {/* Left Side (Form Inputs) */}
-        <div className="flex flex-col gap-6 flex-1 bg-gray-50 p-6 rounded-lg">
+        <div className="flex flex-col gap-6 flex-1 text-black bg-gray-50 p-6 rounded-lg">
           <input
             type="text"
             placeholder="Name"
             id="name"
             value={formData.name}
             onChange={handleFormChange}
-            className="border p-4 rounded-lg bg-white border-black border-solid focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="border p-4 rounded-lg bg-white   border-black border-solid focus:outline-none focus:ring-2 focus:ring-blue-600"
             required
           />
           <textarea
