@@ -320,7 +320,7 @@ export default function CreateListing() {
               </div>
             </div>
             {
-              formData.offer &&( <div className="flex items-center gap-2 text-black">
+              formData.offer &&( <div className="flex items-center  bg-white gap-2 text-black">
               <input
                 type="number"
                 id="discountPrice"
@@ -329,7 +329,7 @@ export default function CreateListing() {
                 max='1000000'
                 onChange={handleFormChange}
                 checked={formData.discountPrice}
-                className="p-3 border border-gray-300 rounded-lg text-black"
+                className="p-3 border border-gray-300 bg-white rounded-lg text-black"
               />
               <div className="flex flex-col items-center">
                 <p>Discount price</p>
