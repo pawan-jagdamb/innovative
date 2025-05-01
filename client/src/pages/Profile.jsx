@@ -223,7 +223,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="max-w-[600px] min-h-screen mx-auto px-4 py-4 bg-blue-500 rounded-md shadow-sm mt-10 text-md">
+    <div className="max-w-[500px] min-h-screen mx-auto px-4 py-4 bg-blue-500 rounded-md shadow-sm mt-10 text-md">
       <h1 className="text-xl font-semibold text-center text-gray-100 mb-3">Profile</h1>
 
       <form onSubmit={handleSubmit} className="space-y-3 text-black">
@@ -285,10 +285,16 @@ export default function Profile() {
         >
           Update Profile
         </button>
+        <Link
+          to="/chating"
+          className="block w-full text-center bg-gray-800 hover:bg-gray-700 text-white py-1.5 rounded-sm text-sm font-medium"
+          >
+        Go To Chat
+      </Link>
 
         <Link
           to="/create-listing"
-          className="block w-full text-center bg-gray-800 hover:bg-gray-700 text-white py-1.5 rounded-sm text-sm font-medium"
+          className="block w-full text-center bg-yellow-300 hover:bg-blue-700 text-white py-1.5 rounded-sm text-sm font-medium"
         >
           Create Listing
         </Link>
@@ -298,10 +304,11 @@ export default function Profile() {
         <button onClick={handleDeleteUser} className="hover:underline">Delete Account</button>
         <button onClick={handleSignOut} className="hover:underline">Sign Out</button>
       </div>
+     
 
       <button
         onClick={handleShowListings}
-        className="mt-3 w-full bg-green-600 hover:bg-green-700 text-white py-1.5 rounded-sm text-sm font-medium"
+        className="mt-3 w-full  bg-gray-800 hover:bg-gray-700 text-white py-1.5 rounded-sm text-sm font-medium"
       >
         Show My Listings
       </button>
