@@ -1,12 +1,10 @@
-import express from 'express'
+
 import { errorHandler, successHandler } from '../utils/error.js';
 import User from '../model/useModel.js'
 import bcrypt from 'bcrypt'; 
 import Listing from '../model/listingModel.js';
-export const test=(req,res)=>{
-    res.json({
-        message:"Api router form controller"
-    })} ;
+export const test= async()=>{}
+
 
 export const updateUserInfo= async(req, res, next)=>{
     const saltRounds=10;

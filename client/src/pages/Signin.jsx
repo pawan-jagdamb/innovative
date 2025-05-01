@@ -80,11 +80,11 @@ export default function Signin() {
             </div>
 
             {/* Forgot Password */}
-            <div className="text-right text-sm">
+            {/* <div className="text-right text-sm">
               <Link to="/forgot-password" className="text-white-100 hover:underline">
                 Forgot Password?
               </Link>
-            </div>
+            </div> */}
 
             {/* Sign In Button */}
             <button
